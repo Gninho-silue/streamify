@@ -1,6 +1,6 @@
-# Streamify - Social Media Platform
+# Streamify - Learning Language  Platform
 
-A modern social media platform built with the MERN stack (MongoDB, Express.js, React, Node.js).
+A modern learning language platform built with the MERN stack (MongoDB, Express.js, React, Node.js).
 
 ## Features
 
@@ -42,7 +42,7 @@ A modern social media platform built with the MERN stack (MongoDB, Express.js, R
 
 1. Clone the repository
 ```bash
-git clone https://github.com/Gninho-silue/streamify.git
+git clone https://github.com/yourusername/streamify.git
 cd streamify
 ```
 
@@ -62,7 +62,7 @@ Create `.env` files in both backend and frontend directories:
 
 Backend (.env):
 ```
-PORT=5000
+PORT=5001
 MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 STREAM_API_KEY=your_stream_api_key
@@ -71,7 +71,7 @@ STREAM_API_SECRET=your_stream_api_secret
 
 Frontend (.env):
 ```
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5001
 VITE_STREAM_API_KEY=your_stream_api_key
 ```
 
