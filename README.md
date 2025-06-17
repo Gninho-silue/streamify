@@ -42,7 +42,7 @@ A modern social media platform built with the MERN stack (MongoDB, Express.js, R
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/streamify.git
+git clone https://github.com/Gninho-silue/streamify.git
 cd streamify
 ```
 
