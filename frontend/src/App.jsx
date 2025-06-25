@@ -13,6 +13,7 @@ import FriendsPage from './pages/FriendsPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import BlockedUsersPage from './pages/BlockedUsersPage.jsx';
 import UsersPage from './pages/UsersPage';
+import LandingPage from './pages/LandingPage.jsx';
 
 import PageLoader from './components/PageLoader.jsx';
 import useAuthUser from './hooks/useAuthUser.js';
@@ -38,6 +39,12 @@ const App = () =>  {
       <Routes>
         <Route path='/' element={
           isAuthenticated && isOnBoarded ?(
+            <Navigate to="/home" />
+          ) : (
+            <LandingPage />
+          )} />
+        <Route path='/home' element={
+          isAuthenticated && isOnBoarded ?(
             <Layout showSidebar={true}>
               <HomePage />
             </Layout>
@@ -48,10 +55,10 @@ const App = () =>  {
           )} />
 
         <Route path='/signup' element={!isAuthenticated ? <SignUpPage /> :
-            <Navigate to={`${isOnBoarded ? "/" : "/onboarding"}`} />} />
+            <Navigate to={`${isOnBoarded ? "/home" : "/onboarding"}`} />} />
             
         <Route path='/login' element={!isAuthenticated ? <LoginPage /> : 
-                <Navigate to={`${isOnBoarded ? "/" : "/onboarding"}`} />} />
+                <Navigate to={`${isOnBoarded ? "/home" : "/onboarding"}`} />} />
 
         <Route path='/onboarding' element={
           isAuthenticated && isOnBoarded ? (
@@ -120,7 +127,13 @@ const App = () =>  {
           <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
         )} />
 
-        <Route path="/users" element={<UsersPage />} />
+        <Route path="/users" element={ isAuthenticated && isOnBoarded ? (
+            <Layout showSidebar={true}>
+              <UsersPage />
+            </Layout>
+        ) :(
+            <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+        )} />
 
       </Routes>
 

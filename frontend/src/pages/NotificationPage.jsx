@@ -8,7 +8,7 @@ import NoNotificationsFound from '../components/NoNotificationsFound';
 const NotificationPage = () => {
   const queryClient = useQueryClient();
 
-  // Récupérer toutes les notifications
+  // Fetch all notifications
   const { data: notifications = [], isLoading: loadingNotifications } = useQuery({
     queryKey: ['notifications'],
     queryFn: getNotifications,
@@ -18,7 +18,7 @@ const NotificationPage = () => {
     }
   });
 
-  // Récupérer les demandes d'ami
+  // Fetch friend requests
   const { data: friendRequests, isLoading: loadingFriendRequests } = useQuery({
     queryKey: ['friendRequests'],
     queryFn: getFriendRequests,
@@ -87,7 +87,7 @@ const NotificationPage = () => {
               className="btn btn-outline btn-sm"
             >
               <CheckIcon className="size-4 mr-2" />
-              Marquer tout comme lu
+              Mark all as read
             </button>
           )}
         </div>
@@ -98,12 +98,12 @@ const NotificationPage = () => {
           </div>
         ) : (
           <>
-            {/* Demandes d'ami en attente */}
+            {/* Pending friend requests */}
             {incomingRequests.length > 0 && (
               <section className='space-y-4'>
                 <h2 className='text-xl font-semibold flex items-center gap-2'>
                   <UserCheckIcon className='size-5 text-primary' />
-                  Demandes d'ami en attente
+                  Pending Friend Requests
                   <span className='badge badge-primary ml-2'>({incomingRequests.length})</span>
                 </h2>
                 <div className='space-y-3'>
@@ -115,7 +115,7 @@ const NotificationPage = () => {
                             <img src={request.sender.profilePicture} alt={request.sender.fullName} className='w-10 h-10 rounded-full' />
                             <div>
                               <h3 className='text-lg font-semibold'>{request.sender.fullName}</h3>
-                              <p className='text-sm text-gray-600'>Veut être votre ami</p>
+                              <p className='text-sm text-gray-600'>Wants to be your friend</p>
                               <div className='flex flex-wrap gap-1.5 mt-1'>
                                 <span className='badge badge-secondary'>Native: {request.sender.nativeLanguage}</span>
                                 <span className='badge badge-outline'>Learning: {request.sender.learningLanguage}</span>
@@ -127,7 +127,7 @@ const NotificationPage = () => {
                             disabled={isPending}
                             className='btn btn-primary btn-sm'
                           >
-                            {isPending ? 'Acceptation...' : 'Accepter'}
+                            {isPending ? 'Accepting...' : 'Accept'}
                           </button>
                         </div>
                       </div>
@@ -137,12 +137,12 @@ const NotificationPage = () => {
               </section>
             )}
 
-            {/* Notifications non lues */}
+            {/* Unread notifications */}
             {unreadNotifications.length > 0 && (
               <section className='space-y-4'>
                 <h2 className='text-xl font-semibold flex items-center gap-2'>
                   <BellIcon className='size-5 text-error' />
-                  Notifications non lues
+                  Unread Notifications
                   <span className='badge badge-error ml-2'>({unreadNotifications.length})</span>
                 </h2>
                 <div className='space-y-3'>
@@ -177,12 +177,12 @@ const NotificationPage = () => {
               </section>
             )}
 
-            {/* Notifications lues */}
+            {/* Read notifications */}
             {readNotifications.length > 0 && (
               <section className='space-y-4'>
                 <h2 className='text-xl font-semibold flex items-center gap-2'>
                   <BellIcon className='size-5 text-success' />
-                  Notifications lues
+                  Read Notifications
                 </h2>
                 <div className='space-y-3'>
                   {readNotifications.map(notification => (
@@ -208,20 +208,20 @@ const NotificationPage = () => {
               </section>
             )}
 
-            {/* Demandes d'ami acceptées */}
+            {/* Accepted friend requests */}
             {acceptedRequests.length > 0 && (
               <section className='space-y-4'>
                 <h2 className='text-xl font-semibold flex items-center gap-2'>
                   <MessageSquareIcon className='size-5 text-success' />
-                  Nouvelles connexions
+                  New Connections
                 </h2>
                 <div className='space-y-3'>
                   {acceptedRequests.map(request => {
                     const isReceived = request.type === 'received';
                     const user = isReceived ? request.sender : request.recipient;
                     const message = isReceived 
-                      ? "Vous êtes maintenant amis !" 
-                      : "A accepté votre demande d'ami !";
+                      ? "You are now friends!" 
+                      : "Accepted your friend request!";
 
                     return (
                       <div key={request._id} className='card bg-base-200 shadow-sm'>
@@ -240,7 +240,7 @@ const NotificationPage = () => {
                             </div>
                             <div className='badge badge-success'>
                               <MessageSquareIcon className='size-4 mr-1' />
-                              Nouvel ami
+                              New Friend
                             </div>
                           </div>
                         </div>
@@ -251,7 +251,7 @@ const NotificationPage = () => {
               </section>
             )}
 
-            {/* Aucune notification */}
+            {/* No notifications */}
             {notifications.length === 0 && incomingRequests.length === 0 && acceptedRequests.length === 0 && (
               <NoNotificationsFound />
             )}

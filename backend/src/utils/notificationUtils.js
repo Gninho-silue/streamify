@@ -33,8 +33,8 @@ export const sendFriendRequestNotification = async (sender, recipient) => {
         recipient: recipient._id,
         sender: sender._id,
         type: 'friend_request',
-        title: 'Nouvelle demande d\'ami',
-        message: `${sender.fullName} vous a envoyé une demande d'ami`,
+        title: 'New Friend Request',
+        message: `${sender.fullName} sent you a friend request`,
         data: {
             senderName: sender.fullName,
             senderPicture: sender.profilePicture,
@@ -49,8 +49,8 @@ export const sendFriendRequestAcceptedNotification = async (accepter, requester)
         recipient: requester._id,
         sender: accepter._id,
         type: 'friend_request',
-        title: 'Demande d\'ami acceptée',
-        message: `${accepter.fullName} a accepté votre demande d'ami`,
+        title: 'Friend Request Accepted',
+        message: `${accepter.fullName} accepted your friend request`,
         data: {
             accepterName: accepter.fullName,
             accepterPicture: accepter.profilePicture,
@@ -65,8 +65,8 @@ export const sendMessageNotification = async (sender, recipient, messagePreview)
         recipient: recipient._id,
         sender: sender._id,
         type: 'message',
-        title: 'Nouveau message',
-        message: `${sender.fullName} vous a envoyé un message`,
+        title: 'New Message',
+        message: `${sender.fullName} sent you a message`,
         data: {
             senderName: sender.fullName,
             senderPicture: sender.profilePicture,
@@ -94,8 +94,8 @@ export const sendNewUserNotification = async (recipient, newUser) => {
         recipient: recipient._id,
         sender: newUser._id,
         type: 'system',
-        title: 'Nouvel utilisateur recommandé',
-        message: `${newUser.fullName} a rejoint la plateforme et pourrait vous intéresser`,
+        title: 'New User Recommended',
+        message: `${newUser.fullName} joined the platform and might interest you`,
         data: {
             newUserName: newUser.fullName,
             newUserPicture: newUser.profilePicture,
@@ -109,18 +109,18 @@ export const sendNewUserNotification = async (recipient, newUser) => {
 // Notifications pour les anniversaires ou événements spéciaux
 export const sendSpecialEventNotification = async (recipient, eventType, eventData = {}) => {
     const eventMessages = {
-        'birthday': 'Joyeux anniversaire ! 🎉',
-        'welcome': 'Bienvenue sur Streamify ! 🚀',
-        'milestone': 'Félicitations pour votre progression ! 🎯',
-        'reminder': 'N\'oubliez pas de pratiquer vos langues ! 📚'
+        'birthday': 'Happy Birthday! 🎉',
+        'welcome': 'Welcome to Streamify! 🚀',
+        'milestone': 'Congratulations on your progress! 🎯',
+        'reminder': 'Don\'t forget to practice your languages! 📚'
     };
 
     return createNotification({
         recipient: recipient._id,
         sender: null,
         type: 'system',
-        title: 'Événement spécial',
-        message: eventMessages[eventType] || 'Événement spécial',
+        title: 'Special Event',
+        message: eventMessages[eventType] || 'Special Event',
         data: {
             eventType,
             ...eventData

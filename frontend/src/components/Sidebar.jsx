@@ -41,17 +41,18 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/profile" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/profile" ? "btn-active" : ""}`}>
-             <SettingsIcon className="size-5 text-base-content opacity-70" />
-              Profile
-            </Link>
-          </li>
-          <li>
             <Link to="/blocked-users" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/blocked-users" ? "btn-active" : ""}`}>
              <BanIcon className="size-5 text-base-content opacity-70" />
               Blocked Users
             </Link>
           </li>
+          <li>
+            <Link to="/profile" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/profile" ? "btn-active" : ""}`}>
+             <SettingsIcon className="size-5 text-base-content opacity-70" />
+              Profile
+            </Link>
+          </li>
+          
         
         </ul>
       </nav>

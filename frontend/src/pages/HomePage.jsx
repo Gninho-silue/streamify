@@ -12,6 +12,7 @@ import { capitalize } from "../lib/utils";
 const HomePage = () => {
   const queryClient = useQueryClient();
   const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set());
+  const [loadingUserIds, setLoadingUserIds] = useState(new Set());
   
   // Fetch user's friends
   const { 
@@ -54,8 +55,11 @@ const HomePage = () => {
   }, [outgoingFriendRequests]);
 
   // Mutation to send a friend request
-  const { mutate: sendRequestMutation, isPending } = useMutation({
+  const { mutate: sendRequestMutation } = useMutation({
     mutationFn: sendFriendRequest,
+    onMutate: (userId) => {
+      setLoadingUserIds(prev => new Set([...prev, userId]));
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["outgoingFriendRequests"] });
       queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -63,6 +67,13 @@ const HomePage = () => {
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to send friend request");
+    },
+    onSettled: (_, __, userId) => {
+      setLoadingUserIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
     }
   });
 
@@ -132,6 +143,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-10">
             {recommendedUsers.slice(0, 4).map(user => {
               const hasRequestSent = outgoingRequestsIds.has(user._id);
+              const isLoading = loadingUserIds.has(user._id);
               return (
                 <div key={user._id} className="card bg-base-200 hover:shadow-lg transition-all duration-300">
                   <div className="card-body p-4 space-y-4">
@@ -176,14 +188,14 @@ const HomePage = () => {
                           sendRequestMutation(user._id);
                         }
                       }}
-                      disabled={hasRequestSent || isPending}
+                      disabled={hasRequestSent || isLoading}
                     >
                       {hasRequestSent ? (
                         <>
                           <CheckCircleIcon className="mr-2 size-4" />
                           Request Sent
                         </>
-                      ): isPending ? (
+                      ): isLoading ? (
                         <>
                           <span className="loading loading-spinner loading-sm"></span>
                           Sending...
