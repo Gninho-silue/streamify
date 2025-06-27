@@ -1,123 +1,237 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import useAuthUser from "../hooks/useAuthUser";
-import { useQuery } from "@tanstack/react-query";
-import { getStreamToken } from "../lib/api";
+"use client"
 
-import {
-  Channel,
-  ChannelHeader,
-  Chat,
-  MessageInput,
-  MessageList,
-  Thread,
-  Window,
-} from "stream-chat-react";
-import { StreamChat } from "stream-chat";
-import toast from "react-hot-toast";
+import { useEffect, useState } from "react"
+import { useParams, useNavigate } from "react-router"
+import useAuthUser from "../hooks/useAuthUser"
+import { useQuery } from "@tanstack/react-query"
+import { getStreamToken } from "../lib/api"
 
-import ChatLoader from "../components/ChatLoader";
-import CallButton from "../components/CallButton";
+import { Channel, Chat, MessageInput, MessageList, Thread, Window } from "stream-chat-react"
+import { StreamChat } from "stream-chat"
+import toast from "react-hot-toast"
 
-const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
+import ChatLoader from "../components/ChatLoader"
+import { ArrowLeft, Video, Phone, MoreVertical, UserCheck, Shield } from "lucide-react"
+
+const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY
 
 const ChatPage = () => {
-  const { id: targetUserId } = useParams();
+  const { id: targetUserId } = useParams()
+  const navigate = useNavigate()
 
-  const [chatClient, setChatClient] = useState(null);
-  const [channel, setChannel] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [chatClient, setChatClient] = useState(null)
+  const [channel, setChannel] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [targetUser, setTargetUser] = useState(null)
 
-  const { authUser } = useAuthUser();
+  const { authUser } = useAuthUser()
 
   const { data: tokenData } = useQuery({
     queryKey: ["streamToken"],
     queryFn: getStreamToken,
-    enabled: !!authUser, // this will run only when authUser is available
-  });
+    enabled: !!authUser,
+  })
 
   useEffect(() => {
     const initChat = async () => {
-      if (!tokenData?.token || !authUser) return;
+      if (!tokenData?.token || !authUser) return
 
       try {
-        console.log("Initializing stream chat client...");
+        console.log("Initializing stream chat client...")
 
-        const client = StreamChat.getInstance(STREAM_API_KEY);
+        const client = StreamChat.getInstance(STREAM_API_KEY)
 
         await client.connectUser(
-          {
-            id: authUser._id,
-            name: authUser.fullName,
-            image: authUser.profilePic,
-          },
-          tokenData.token
-        );
+            {
+              id: authUser._id,
+              name: authUser.fullName,
+              image: authUser.profilePicture,
+            },
+            tokenData.token,
+        )
 
-        //
-        const channelId = [authUser._id, targetUserId].sort().join("-");
-
-        // you and me
-        // if i start the chat => channelId: [myId, yourId]
-        // if you start the chat => channelId: [yourId, myId]  => [myId,yourId]
+        const channelId = [authUser._id, targetUserId].sort().join("-")
 
         const currChannel = client.channel("messaging", channelId, {
           members: [authUser._id, targetUserId],
-        });
+        })
 
-        await currChannel.watch();
+        await currChannel.watch()
 
-        setChatClient(client);
-        setChannel(currChannel);
+        // Get target user info from channel members
+        const members = Object.values(currChannel.state.members)
+        const target = members.find((member) => member.user.id !== authUser._id)
+        setTargetUser(target?.user)
+
+        setChatClient(client)
+        setChannel(currChannel)
       } catch (error) {
-        console.error("Error initializing chat:", error);
-        toast.error("Could not connect to chat. Please try again.");
+        console.error("Error initializing chat:", error)
+        toast.error("Could not connect to chat. Please try again.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    initChat();
-  }, [tokenData, authUser, targetUserId]);
+    initChat()
+  }, [tokenData, authUser, targetUserId])
 
   const handleVideoCall = () => {
     if (channel) {
-      const callUrl = `${window.location.origin}/call/${channel.id}`;
+      const callUrl = `${window.location.origin}/call/${channel.id}`
 
       channel.sendMessage({
-        text: `I've started a video call. Join me here: ${callUrl}`,
-         attachments: [
-        {
-          type: 'video_call',
-          title: 'Join Video Call',
-          url: callUrl,
-        },
-      ],
-      });
+        text: `🎥 I've started a video call. Join me here: ${callUrl}`,
+        attachments: [
+          {
+            type: "video_call",
+            title: "Join Video Call",
+            url: callUrl,
+          },
+        ],
+      })
 
-      toast.success("Video call link sent successfully!");
+      toast.success("Video call link sent successfully!")
     }
-  };
+  }
 
-  if (loading || !chatClient || !channel) return <ChatLoader />;
+  const handleVoiceCall = () => {
+    if (channel) {
+      const callUrl = `${window.location.origin}/call/${channel.id}?type=audio`
+
+      channel.sendMessage({
+        text: `📞 I've started a voice call. Join me here: ${callUrl}`,
+        attachments: [
+          {
+            type: "voice_call",
+            title: "Join Voice Call",
+            url: callUrl,
+          },
+        ],
+      })
+
+      toast.success("Voice call link sent successfully!")
+    }
+  }
+
+  if (loading || !chatClient || !channel) return <ChatLoader />
 
   return (
-    <div className="h-[93vh]">
-      <Chat client={chatClient}>
-        <Channel channel={channel}>
-          <div className="w-full relative">
-            <CallButton handleVideoCall={handleVideoCall} />
-            <Window>
-              <ChannelHeader />
-              <MessageList />
-              <MessageInput focus />
-            </Window>
-          </div>
-          <Thread />
-        </Channel>
-      </Chat>
-    </div>
-  );
-};
-export default ChatPage;
+      <div className="fixed inset-0 bg-base-100 flex flex-col overflow-hidden">
+        {/* Custom Header - Fixed at top */}
+        <div className="flex-shrink-0 bg-base-100 border-b border-base-300 shadow-sm z-10">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center gap-4">
+              <button
+                  onClick={() => navigate(-1)}
+                  className="btn btn-ghost btn-circle hover:bg-primary/10 transition-all duration-300"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
 
+              {targetUser && (
+                  <div className="flex items-center gap-3">
+                    <div className="avatar indicator">
+                      <div className="w-12 h-12 rounded-2xl ring ring-primary/20 ring-offset-base-100 ring-offset-2">
+                        <img
+                            src={targetUser.image || "/default-avatar.png"}
+                            alt={targetUser.name}
+                            className="rounded-2xl"
+                        />
+                      </div>
+                      <span className="indicator-item badge badge-success badge-sm">
+                    <div className="w-2 h-2 bg-current rounded-full animate-pulse" />
+                  </span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg">{targetUser.name}</h3>
+                      <p className="text-sm text-base-content/70">Online now</p>
+                    </div>
+                  </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                  onClick={handleVoiceCall}
+                  className="btn btn-ghost btn-circle hover:bg-success/10 hover:text-success transition-all duration-300 group"
+                  title="Start voice call"
+              >
+                <Phone className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+              </button>
+
+              <button
+                  onClick={handleVideoCall}
+                  className="btn btn-ghost btn-circle hover:bg-primary/10 hover:text-primary transition-all duration-300 group"
+                  title="Start video call"
+              >
+                <Video className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+              </button>
+
+              <div className="dropdown dropdown-end">
+                <button tabIndex={0} className="btn btn-ghost btn-circle hover:bg-base-200 transition-all duration-300">
+                  <MoreVertical className="w-5 h-5" />
+                </button>
+                <ul
+                    tabIndex={0}
+                    className="dropdown-content menu p-2 shadow-2xl bg-base-100 rounded-2xl w-52 border border-base-300"
+                >
+                  <li>
+                    <a className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/10 transition-colors duration-200">
+                      <UserCheck className="w-4 h-4" />
+                      View Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a className="flex items-center gap-3 p-3 rounded-xl hover:bg-error/10 hover:text-error transition-colors duration-200">
+                      <Shield className="w-4 h-4" />
+                      Block User
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Chat Container - Takes ALL remaining space */}
+        <div className="flex-1 min-h-0 relative">
+          <Chat client={chatClient} theme="str-chat__theme-light">
+            <Channel channel={channel}>
+              <div className="h-full flex">
+                <div className="flex-1 flex flex-col min-h-0">
+                  <Window>
+                    {/* Messages area - Scrollable, takes all available space */}
+                    <div className="flex-1 min-h-0 bg-base-50 overflow-hidden">
+                      <MessageList />
+                    </div>
+                    {/* Input area - Fixed at bottom */}
+                    <div className="flex-shrink-0 bg-base-100 border-t border-base-300">
+                      <div className="p-4">
+                        <MessageInput focus />
+                      </div>
+                    </div>
+                  </Window>
+                </div>
+                {/* Thread sidebar */}
+                <Thread />
+              </div>
+            </Channel>
+          </Chat>
+
+          {/* Floating Action Button */}
+          <div className="absolute bottom-6 right-6 z-20">
+            <button
+                onClick={handleVideoCall}
+                className="btn btn-primary btn-circle btn-lg shadow-2xl hover:shadow-primary/25 transition-all duration-300 group"
+                title="Quick video call"
+            >
+              <Video className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
+            </button>
+          </div>
+        </div>
+      </div>
+  )
+}
+
+export default ChatPage

@@ -1,137 +1,178 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import  { useState } from 'react'
-import { login } from '../lib/api';
-import { ShipWheelIcon } from 'lucide-react';
-import { Link } from 'react-router';
+"use client"
+
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
+import { login } from "../lib/api"
+import { ShipWheelIcon, Mail, Lock, ArrowRight, Sparkles } from "lucide-react"
+import { Link, useNavigate } from "react-router"
 
 const LoginPage = () => {
-  const [ loginData, setLoginData ] = useState({
+  const [loginData, setLoginData] = useState({
     email: "",
-    password: ""
-  });
+    password: "",
+  })
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
-  const { mutate: loginMutation, isPending, error } = useMutation({
+  const {
+    mutate: loginMutation,
+    isPending,
+    error,
+  } = useMutation({
     mutationFn: login,
-    onSuccess: () => { 
-      queryClient.invalidateQueries({ queryKey: ["authUser"]}),
-      navigate("/");
-    }
-  });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["authUser"] })
+      navigate("/")
+    },
+  })
 
   const handleLoginChange = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     loginMutation(loginData)
-  };
+  }
 
   return (
-    <div className='h-screen flex items-center justify-center p-4 sm:p-6 md:p-8' data-theme="forest">
-      <div className='border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto
-        bg-base-100 rounded-xl shadow-lg overflow-hidden'>
-        {/* LOGIN FORM SECTION */}
-          <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
-          {/* LOGO */}
-          <div className='mb-4 flex items-center justify-start gap-2'>
-            <ShipWheelIcon className='size-9 text-primary' />
-            <span className='text-3xl font-bold font-mono bg-clip-text 
-            text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider'>
-              Streamify
-            </span>
-          </div>
-
-          {/** ERROR MESSAGE */}
-
-          {error && (
-            <div className='alert alert-error mb-4'>
-              <span>{error.response?.data?.message ||
-                  "An error occurred during sign up."}</span>
-            </div>  
-          )}
-
-
-          <div className='w-full'>
-            <form onSubmit={handleLoginChange}>
-              <div className='space-y-4'>
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-base-200 to-secondary/10 flex items-center justify-center p-4">
+        <div className="card bg-base-100 w-full max-w-6xl shadow-2xl border border-base-300 overflow-hidden">
+          <div className="flex flex-col lg:flex-row">
+            {/* LOGIN FORM SECTION */}
+            <div className="w-full lg:w-1/2 p-8 lg:p-12">
+              {/* LOGO */}
+              <div className="mb-8 flex items-center gap-3">
+                <div className="p-3 bg-primary/10 rounded-2xl">
+                  <ShipWheelIcon className="w-8 h-8 text-primary" />
+                </div>
                 <div>
-                  <h2 className='text-xl font-semibold'> Welcome Back</h2>
-                  <p className='text-sm opacity-70'>
-                    Login to your account to continue your learning language journey
-                  </p>
+                <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
+                  Streamify
+                </span>
+                  <p className="text-sm text-base-content/60 font-medium">Language Exchange Platform</p>
                 </div>
               </div>
 
-              <div className='flex flex-col gap-3'>
-                <div className='form-control w-full space-y-2'>
-                  <label className='label'>
-                    <span className='label-text'>Email</span>
-                  </label>
-                  <input type='email'
-                          placeholder='Enter Your Email'
-                          className='input input-bordered w-full'
-                          value={loginData.email}
-                          onChange={(e) => setLoginData({ ...loginData, email: e.target.value})}
-                          required
-                  />            
-                </div>
-                <div className='form-control w-full space-y-2'>
-                  <label className='label'>
-                    <span className='label-text'>Password</span>
-                  </label>
-                  <input type='password'
-                          placeholder='Enter Your Password'
-                          className='input input-bordered w-full'
-                          value={loginData.password}
-                          onChange={(e) => setLoginData({ ...loginData, password: e.target.value})}
-                          required
-                  />            
-                </div>
+              {/* ERROR MESSAGE */}
+              {error && (
+                  <div className="alert alert-error mb-6 shadow-lg animate-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 bg-error-content rounded-full flex items-center justify-center">
+                        <span className="text-error text-xs font-bold">!</span>
+                      </div>
+                      <span>{error.response?.data?.message || "An error occurred during login."}</span>
+                    </div>
+                  </div>
+              )}
 
-                <button type='submit' className='btn btn-primary w-full' disabled={isPending}>
-                  { isPending ? (
-                    <>
-                      <span className='loading loading-spinner loading-xs'></span>
-                      Login...
-                    </>
-                  ): (
-                    "Login"
-                  )}
-                </button>
-
-                <div className="text-center mt-4">
-                  <p className="text-sm">
-                    Don't have an account ?{" "}
-                    <Link to="/signup" className="link link-primary">
-                      Create one
-                    </Link>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Welcome Back!
+                  </h1>
+                  <p className="text-base-content/70 text-lg">
+                    Continue your language learning journey with friends from around the world
                   </p>
                 </div>
+
+                <form onSubmit={handleLoginChange} className="space-y-6">
+                  <div className="form-control">
+                    <label className="label">
+                    <span className="label-text font-medium flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      Email Address
+                    </span>
+                    </label>
+                    <input
+                        type="email"
+                        placeholder="Enter your email"
+                        className="input input-bordered input-lg focus:input-primary"
+                        value={loginData.email}
+                        onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                        required
+                    />
+                  </div>
+
+                  <div className="form-control">
+                    <label className="label">
+                    <span className="label-text font-medium flex items-center gap-2">
+                      <Lock className="w-4 h-4" />
+                      Password
+                    </span>
+                    </label>
+                    <input
+                        type="password"
+                        placeholder="Enter your password"
+                        className="input input-bordered input-lg focus:input-primary"
+                        value={loginData.password}
+                        onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                        required
+                    />
+                    <label className="label">
+                      <a href="#" className="label-text-alt link link-hover link-primary">
+                        Forgot password?
+                      </a>
+                    </label>
+                  </div>
+
+                  <button type="submit" className="btn btn-primary btn-lg w-full gap-2 group" disabled={isPending}>
+                    {isPending ? (
+                        <>
+                          <span className="loading loading-spinner loading-sm"></span>
+                          Signing in...
+                        </>
+                    ) : (
+                        <>
+                          Sign In
+                          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                        </>
+                    )}
+                  </button>
+
+                  <div className="divider">or</div>
+
+                  <div className="text-center">
+                    <p className="text-base-content/70">
+                      Don't have an account?{" "}
+                      <Link to="/signup" className="link link-primary font-medium hover:link-hover">
+                        Create one now
+                      </Link>
+                    </p>
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
-          </div>
-          {/* SIGN UP IMAGE */}
-        <div className="hidden lg:flex w-full lg:w-1/2 bg-primary/10 items-center justify-center">
-          <div className="max-w-md p-8">
-            <div className="relative aspect-square max-w-sm mx-auto">
-              <img
-                src="/login-image.png"
-                alt="Login"
-                className="w-full h-full object-cover"
-              />
             </div>
-            <div className="text-center space-y-3">
-              <h2 className="text-xl font-semibold">Connect with language partners worldwide</h2>
-              <p className="opacity-70">
-                Your journey to fluency starts here!
-              </p>
+
+            {/* WELCOME IMAGE SECTION */}
+            <div className="hidden lg:flex w-full lg:w-1/2 bg-gradient-to-br from-primary/20 to-secondary/20 items-center justify-center p-12">
+              <div className="text-center space-y-8 max-w-md">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full blur-3xl"></div>
+                  <img
+                      src="/login-image.png"
+                      alt="Language Learning Community"
+                      className="relative w-80 h-80 object-cover rounded-3xl shadow-2xl"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <Sparkles className="w-6 h-6 text-primary" />
+                    <span className="font-bold text-lg">Join Our Community</span>
+                    <Sparkles className="w-6 h-6 text-secondary" />
+                  </div>
+                  <h2 className="text-2xl font-bold">Connect with Language Partners Worldwide</h2>
+                  <p className="text-base-content/70 leading-relaxed">
+                    Practice languages with native speakers, make friends, and accelerate your learning journey in a
+                    supportive community.
+                  </p>
+                  <div className="flex justify-center gap-4 pt-4">
+                    <div className="badge badge-primary badge-lg">🌍 Global Community</div>
+                    <div className="badge badge-secondary badge-lg">💬 Real Conversations</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-          
-    </div>
-    
   )
 }
 
