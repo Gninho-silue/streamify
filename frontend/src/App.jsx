@@ -1,5 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router'
-import { Toaster } from 'react-hot-toast';
+import {Navigate, Route, Routes} from 'react-router'
+import {Toaster} from 'react-hot-toast';
 
 import HomePage from './pages/HomePage.jsx'
 import SignUpPage from './pages/SignUpPage.jsx'
@@ -14,11 +14,18 @@ import SettingsPage from './pages/SettingsPage.jsx';
 import BlockedUsersPage from './pages/BlockedUsersPage.jsx';
 import UsersPage from './pages/UsersPage';
 import LandingPage from './pages/LandingPage.jsx';
+import UserProfilePage from './pages/UserProfilePage.jsx';
+import GroupsPage from './pages/GroupsPage.jsx';
+import CreateGroupPage from './pages/CreateGroupPage.jsx';
+import GroupDetailPage from './pages/GroupDetailPage.jsx';
+import MyGroupsPage from './pages/MyGroupsPage.jsx';
+import GroupCallPage from './pages/GroupCallPage.jsx';
 
 import PageLoader from './components/PageLoader.jsx';
 import useAuthUser from './hooks/useAuthUser.js';
 import Layout from './components/Layout.jsx';
-import { useThemeStore } from './store/useThemeStore.js';
+import {useThemeStore} from './store/useThemeStore.js';
+import UpdateGroupPage from "./pages/UpdateGroupPage.jsx";
 
 
 const App = () =>  {
@@ -71,7 +78,7 @@ const App = () =>  {
         )} /> 
 
         <Route path='/chat/:id' element={isAuthenticated && isOnBoarded ? (
-          <Layout showSidebar={false}>
+          <Layout showSidebar={true}>
             <ChatPage />
           </Layout>
         ) : (
@@ -133,6 +140,67 @@ const App = () =>  {
             </Layout>
         ) :(
             <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+        )} />
+
+        <Route path="/users/:id" element={ isAuthenticated && isOnBoarded ? (
+            <Layout showSidebar={true}>
+              <UserProfilePage />
+            </Layout>
+        ) :(
+            <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+        )} />
+
+        <Route path="/groups" element={ isAuthenticated && isOnBoarded ? (
+            <Layout showSidebar={true}>
+              <GroupsPage />
+            </Layout>
+        ) :(
+            <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+        )} />
+
+
+        <Route path="/groups/create" element={ isAuthenticated && isOnBoarded ? (
+            <Layout showSidebar={true}>
+              <CreateGroupPage />
+            </Layout>
+        ) :(
+            <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+        )} />
+
+          <Route path="/groups/:id/edit" element={ isAuthenticated && isOnBoarded ? (
+              <Layout showSidebar={true}>
+                  <UpdateGroupPage />
+              </Layout>
+          ) :(
+              <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+          )} />
+
+        <Route path="/groups/:id" element={ isAuthenticated && isOnBoarded ? (
+            <Layout showSidebar={true}>
+              <GroupDetailPage />
+            </Layout>
+        ) :(
+            <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+        )} />
+
+        <Route path="/groups/:id/call" element={ isAuthenticated && isOnBoarded ? (
+            <GroupCallPage />
+        ) :(
+            <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+        )} />
+
+        <Route path="/groups/:id/call/:callType" element={ isAuthenticated && isOnBoarded ? (
+            <GroupCallPage />
+        ) :(
+            <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
+        )} />
+
+        <Route path="/my-groups" element={ isAuthenticated && isOnBoarded ? (
+            <Layout showSidebar={true}>
+              <MyGroupsPage />
+            </Layout>
+        ) :(
+          <Navigate to={`${isAuthenticated ? "/onboarding" : "/login"}`} />
         )} />
 
       </Routes>

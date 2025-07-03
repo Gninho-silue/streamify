@@ -14,6 +14,8 @@ import {
 } from "lucide-react"
 import { toast } from "react-hot-toast"
 import NoNotificationsFound from "../components/NoNotificationsFound"
+import {formatDate} from "../lib/utils.js";
+import { Link } from "react-router"
 
 const NotificationPage = () => {
   const queryClient = useQueryClient()
@@ -86,21 +88,7 @@ const NotificationPage = () => {
 
   const isLoading = loadingNotifications || loadingFriendRequests
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffInHours = (now - date) / (1000 * 60 * 60)
 
-    if (diffInHours < 1) {
-      return "Just now"
-    } else if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)}h ago`
-    } else if (diffInHours < 48) {
-      return "Yesterday"
-    } else {
-      return date.toLocaleDateString()
-    }
-  }
 
   return (
       <div className="min-h-screen bg-base-200">
@@ -190,46 +178,48 @@ const NotificationPage = () => {
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-4">
                                     <div className="avatar">
-                                      <div className="w-16 h-16 rounded-2xl ring ring-primary/30 ring-offset-base-100 ring-offset-2">
+                                      <div className="w-12 h-12 rounded-2xl">
                                         <img
                                             src={request.sender.profilePicture || "/placeholder.svg"}
                                             alt={request.sender.fullName}
                                             className="rounded-2xl"
                                         />
                                       </div>
-                                    </div>
-                                    <div>
-                                      <h3 className="card-title text-lg mb-1">{request.sender.fullName}</h3>
-                                      <p className="text-base-content/70 mb-2">Wants to be your language partner</p>
-                                      <div className="flex flex-wrap gap-2">
-                                        <div className="badge badge-primary gap-1">
-                                          <span className="font-bold">Native:</span>
-                                          {request.sender.nativeLanguage}
-                                        </div>
-                                        <div className="badge badge-secondary gap-1">
-                                          <span className="font-bold">Learning:</span>
-                                          {request.sender.learningLanguage}
-                                        </div>
-                                      </div>
-                                    </div>
+                          </div>
+                          <div>
+                                      <h3 className="font-semibold mb-1">{request.sender.fullName}</h3>
+                                      <p className="text-sm text-base-content/70 mb-2">
+                                        Wants to connect and learn languages together
+                                      </p>
+                                      <div className="flex items-center gap-2">
+                                        <Link
+                                            to={`/users/${request.sender._id}`}
+                                            className="btn btn-ghost btn-xs gap-1"
+                                        >
+                                          Voir le profil
+                                        </Link>
+                            </div>
+                          </div>
+                        </div>
+                                  <div className="flex gap-2">
+                        <button 
+                          onClick={() => acceptRequestMutation(request._id)} 
+                          disabled={isPending}
+                                      className="btn btn-primary btn-sm gap-2"
+                        >
+                                      {isPending ? (
+                                          <>
+                                            <span className="loading loading-spinner loading-xs"></span>
+                                            Accepting...
+                                          </>
+                                      ) : (
+                                          <>
+                                            <CheckIcon className="w-4 h-4" />
+                                            Accept
+                                          </>
+                                      )}
+                        </button>
                                   </div>
-                                  <button
-                                      onClick={() => acceptRequestMutation(request._id)}
-                                      disabled={isPending}
-                                      className="btn btn-primary gap-2"
-                                  >
-                                    {isPending ? (
-                                        <>
-                                          <span className="loading loading-spinner loading-sm"></span>
-                                          Accepting...
-                                        </>
-                                    ) : (
-                                        <>
-                                          <CheckIcon className="w-4 h-4" />
-                                          Accept
-                                        </>
-                                    )}
-                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -292,9 +282,9 @@ const NotificationPage = () => {
                               </div>
                             </div>
                         ))}
-                      </div>
-                    </section>
-                )}
+                </div>
+              </section>
+            )}
 
                 {/* New Connections */}
                 {acceptedRequests.length > 0 && (
@@ -316,7 +306,7 @@ const NotificationPage = () => {
                           const user = isReceived ? request.sender : request.recipient
                           const message = isReceived ? "You are now friends!" : "Accepted your friend request!"
 
-                          return (
+                    return (
                               <div
                                   key={request._id}
                                   className="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 border border-success/20"
@@ -334,26 +324,30 @@ const NotificationPage = () => {
                                         </div>
                                       </div>
                                       <div>
-                                        <h3 className="font-bold text-lg mb-1">{user.fullName}</h3>
-                                        <p className="text-base-content/70 mb-2">{message}</p>
-                                        <div className="flex items-center gap-2 text-sm text-base-content/60">
-                                          <ClockIcon className="w-4 h-4" />
-                                          {formatDate(request.updatedAt)}
+                                        <h3 className="font-semibold mb-1">{user.fullName}</h3>
+                                        <p className="text-sm text-base-content/70 mb-2">{message}</p>
+                                        <div className="flex items-center gap-2">
+                                          <Link
+                                              to={`/users/${user._id}`}
+                                              className="btn btn-ghost btn-xs gap-1"
+                                          >
+                                            Voir le profil
+                                          </Link>
                                         </div>
-                                      </div>
-                                    </div>
+                            </div>
+                            </div>
                                     <div className="badge badge-success gap-2">
-                                      <MessageSquareIcon className="w-4 h-4" />
+                                      <CheckCircleIcon className="w-4 h-4" />
                                       Connected
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                          )
-                        })}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </section>
-                )}
+                          )
+                  })}
+                </div>
+              </section>
+            )}
 
                 {/* Read Notifications */}
                 {readNotifications.length > 0 && (
@@ -405,12 +399,12 @@ const NotificationPage = () => {
 
                 {/* No Notifications */}
                 {notifications.length === 0 && incomingRequests.length === 0 && acceptedRequests.length === 0 && (
-                    <NoNotificationsFound />
-                )}
+              <NoNotificationsFound />
+            )}
               </div>
-          )}
-        </div>
+        )}
       </div>
+    </div>
   )
 }
 

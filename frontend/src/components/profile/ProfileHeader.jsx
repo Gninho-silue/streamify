@@ -4,8 +4,9 @@ import { useState } from "react"
 import { CameraIcon, Upload, Sparkles, CheckCircle, AlertCircle } from "lucide-react"
 import { compressImage, validateImageFile } from "../../utils/imageUtils"
 import toast from "react-hot-toast"
+import {formatDate} from "../../lib/utils.js";
 
-const ProfileHeader = ({ profile, onUpdate }) => {
+const ProfileHeader = ({ profile, onUpdate, isOwnProfile = false }) => {
     const [isEditing, setIsEditing] = useState(false)
     const [coverImage, setCoverImage] = useState(profile.coverPicture)
     const [profileImage, setProfileImage] = useState(profile.profilePicture)
@@ -101,20 +102,22 @@ const ProfileHeader = ({ profile, onUpdate }) => {
                 )}
 
                 {/* Cover Image Upload Button */}
-                <label
-                    className={`absolute bottom-4 right-4 btn btn-circle btn-lg bg-base-100/90 backdrop-blur-sm border-base-300 hover:bg-base-100 shadow-lg transition-all duration-300 ${
-                        isUploading ? "opacity-50 cursor-not-allowed" : "hover:scale-110"
-                    }`}
-                >
-                    <CameraIcon className="w-6 h-6" />
-                    <input
-                        type="file"
-                        className="hidden"
-                        accept="image/jpeg,image/jpg,image/png,image/webp"
-                        onChange={handleCoverImageChange}
-                        disabled={isUploading}
-                    />
-                </label>
+                {isOwnProfile && (
+                    <label
+                        className={`absolute bottom-4 right-4 btn btn-circle btn-lg bg-base-100/90 backdrop-blur-sm border-base-300 hover:bg-base-100 shadow-lg transition-all duration-300 ${
+                            isUploading ? "opacity-50 cursor-not-allowed" : "hover:scale-110"
+                        }`}
+                    >
+                        <CameraIcon className="w-6 h-6" />
+                        <input
+                            type="file"
+                            className="hidden"
+                            accept="image/jpeg,image/jpg,image/png,image/webp"
+                            onChange={handleCoverImageChange}
+                            disabled={isUploading}
+                        />
+                    </label>
+                )}
 
                 {/* Upload Progress Overlay */}
                 {isUploading && (
@@ -154,20 +157,22 @@ const ProfileHeader = ({ profile, onUpdate }) => {
                         </div>
 
                         {/* Profile Image Upload Button */}
-                        <label
-                            className={`absolute bottom-2 right-2 btn btn-circle btn-sm bg-primary text-primary-content border-2 border-base-100 shadow-lg transition-all duration-300 ${
-                                isUploading ? "opacity-50 cursor-not-allowed" : "hover:scale-110"
-                            }`}
-                        >
-                            <CameraIcon className="w-4 h-4" />
-                            <input
-                                type="file"
-                                className="hidden"
-                                accept="image/jpeg,image/jpg,image/png,image/webp"
-                                onChange={handleProfileImageChange}
-                                disabled={isUploading}
-                            />
-                        </label>
+                        {isOwnProfile && (
+                            <label
+                                className={`absolute bottom-2 right-2 btn btn-circle btn-sm bg-primary text-primary-content border-2 border-base-100 shadow-lg transition-all duration-300 ${
+                                    isUploading ? "opacity-50 cursor-not-allowed" : "hover:scale-110"
+                                }`}
+                            >
+                                <CameraIcon className="w-4 h-4" />
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                                    onChange={handleProfileImageChange}
+                                    disabled={isUploading}
+                                />
+                            </label>
+                        )}
                     </div>
                 </div>
 
@@ -200,14 +205,16 @@ const ProfileHeader = ({ profile, onUpdate }) => {
                     </div>
 
                     {/* Edit Button */}
-                    <button
-                        className="btn btn-primary gap-2 btn-lg shadow-lg hover:shadow-primary/25 transition-all duration-300"
-                        onClick={() => setIsEditing(!isEditing)}
-                        disabled={isUploading}
-                    >
-                        <Sparkles className="w-5 h-5" />
-                        {isEditing ? "Save Profile" : "Edit Profile"}
-                    </button>
+                    {isOwnProfile && (
+                        <button
+                            className="btn btn-primary gap-2 btn-lg shadow-lg hover:shadow-primary/25 transition-all duration-300"
+                            onClick={() => setIsEditing(!isEditing)}
+                            disabled={isUploading}
+                        >
+                            <Sparkles className="w-5 h-5" />
+                            {isEditing ? "Save Profile" : "Edit Profile"}
+                        </button>
+                    )}
                 </div>
 
                 {/* Stats Section */}
@@ -226,7 +233,7 @@ const ProfileHeader = ({ profile, onUpdate }) => {
                             <Sparkles className="w-8 h-8" />
                         </div>
                         <div className="stat-title">Member Since</div>
-                        <div className="stat-value text-secondary text-lg">2024</div>
+                        <div className="stat-value text-secondary text-lg">{formatDate(profile.createdAt)}</div>
                         <div className="stat-desc">Active learner</div>
                     </div>
 

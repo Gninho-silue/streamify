@@ -28,3 +28,48 @@ export const generateStreamToken = (userId) => {
         console.error("Error generating Stream token:", error);
     }
 }
+
+export const createChannel = async (type, channelId, data) => {
+    try {
+        // Ensure created_by_id is included for server-side auth
+        const channelData = {
+            ...data,
+            created_by_id: data.created_by_id || data.members?.[0] || 'system'
+        };
+        
+        const channel = client.channel(type, channelId, channelData);
+        await channel.create();
+        return channel;
+    } catch (error) {
+        console.error("Error creating Stream channel:", error);
+        throw error;
+    }
+}
+
+export const addMembersToChannel = async (channelId, memberIds) => {
+    try {
+        const channel = client.channel('messaging', channelId);
+        await channel.addMembers(memberIds);
+        return channel;
+    } catch (error) {
+        console.error("Error adding members to Stream channel:", error);
+        throw error;
+    }
+}
+
+// À ajouter dans lib/stream.js
+
+export async function removeMemberFromChannel(channelId, userId) {
+    try {
+        // Récupérer le canal
+        const channel = client.channel('messaging', channelId);
+
+        // Supprimer le membre du canal
+        await channel.removeMembers([userId]);
+
+        return true;
+    } catch (error) {
+        console.error('Error removing member from Stream channel:', error);
+        throw error;
+    }
+}

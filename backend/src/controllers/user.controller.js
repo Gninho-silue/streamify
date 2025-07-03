@@ -402,3 +402,19 @@ export async function getBlockedUsers(req, res) {
     }
 }
 
+// Récupérer le profil public d'un utilisateur par son ID
+export async function getUserPublicProfile(req, res) {
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId)
+            .select('fullName profilePicture coverPicture bio nativeLanguage learningLanguage location interests socialLinks status availability isOnBoarded createdAt');
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error("Error fetching public user profile:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+

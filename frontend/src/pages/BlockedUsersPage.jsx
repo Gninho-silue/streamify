@@ -1,14 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getBlockedUsers, unblockUser } from "../lib/api"
-import { toast } from "react-hot-toast"
-import { SearchIcon, UserXIcon, Shield, AlertTriangle, CheckCircle, Undo2 } from "lucide-react"
+import {useState} from "react"
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query"
+import {getBlockedUsers, unblockUser} from "../lib/api"
+import {toast} from "react-hot-toast"
+import {AlertTriangle, CheckCircle, SearchIcon, Shield, UserXIcon} from "lucide-react"
+import FriendCard from "../components/FriendCard.jsx";
 
 const BlockedUsersPage = () => {
   const queryClient = useQueryClient()
   const [searchQuery, setSearchQuery] = useState("")
+  const [pendingActionId, setPendingActionId] = useState(null)
 
   const { data: blockedUsers = [], isLoading } = useQuery({
     queryKey: ["blockedUsers"],
@@ -23,17 +25,23 @@ const BlockedUsersPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blockedUsers"] })
       toast.success("User unblocked successfully")
+      setPendingActionId(null)
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to unblock user")
+      setPendingActionId(null)
     },
   })
 
   const filteredUsers = blockedUsers.filter((user) => user.fullName.toLowerCase().includes(searchQuery.toLowerCase()))
 
-  const handleUnblock = (userId, userName) => {
-    if (window.confirm(`Are you sure you want to unblock ${userName}? They will be able to contact you again.`)) {
-      unblockUserMutation(userId)
+  // Handle card actions
+  const handleCardAction = (actionType, userId, userName) => {
+    if (actionType === 'unblock') {
+      if (window.confirm(`Are you sure you want to unblock ${userName}? They will be able to contact you again.`)) {
+        setPendingActionId(userId)
+        unblockUserMutation(userId)
+      }
     }
   }
 
@@ -188,67 +196,18 @@ const BlockedUsersPage = () => {
           ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredUsers.map((user) => (
-                    <div
+                    <FriendCard
                         key={user._id}
-                        className="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 border border-error/20"
-                    >
-                      <div className="card-body p-6">
-                        {/* User Info */}
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="avatar">
-                            <div className="w-16 h-16 rounded-2xl ring ring-error/30 ring-offset-base-100 ring-offset-2 grayscale">
-                              <img
-                                  src={user.profilePicture || "/default-avatar.png"}
-                                  alt={user.fullName}
-                                  className="rounded-2xl"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="card-title text-lg mb-1 truncate">{user.fullName}</h3>
-                            <div className="badge badge-error badge-sm gap-1">
-                              <UserXIcon className="w-3 h-3" />
-                              Blocked
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* User Details */}
-                        {(user.nativeLanguage || user.learningLanguage) && (
-                            <div className="flex flex-wrap gap-2 mb-4 opacity-60">
-                              {user.nativeLanguage && (
-                                  <div className="badge badge-outline badge-sm">Native: {user.nativeLanguage}</div>
-                              )}
-                              {user.learningLanguage && (
-                                  <div className="badge badge-outline badge-sm">Learning: {user.learningLanguage}</div>
-                              )}
-                            </div>
-                        )}
-
-                        {/* Action Button */}
-                        <div className="card-actions justify-stretch mt-auto">
-                          <button
-                              className="btn btn-success btn-outline w-full gap-2 group"
-                              onClick={() => handleUnblock(user._id, user.fullName)}
-                              disabled={isPending}
-                          >
-                            {isPending ? (
-                                <>
-                                  <span className="loading loading-spinner loading-sm"></span>
-                                  Unblocking...
-                                </>
-                            ) : (
-                                <>
-                                  <Undo2 className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-                                  Unblock User
-                                </>
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                        user={user}
+                        cardType="blocked"
+                        onAction={handleCardAction}
+                        isPending={isPending && pendingActionId === user._id}
+                        pendingAction="unblock"
+                    />
                 ))}
               </div>
+
+
           )}
 
           {/* Help Section */}

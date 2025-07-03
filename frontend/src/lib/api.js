@@ -60,10 +60,10 @@ export const acceptFriendRequest = async (requestId) => {
       return response.data;
 }
 
-export const getStreamToken = async() => {
-      const response = await axiosInstance.get('/chat/token');
-      return response.data;
-}
+export const getStreamToken = async () => {
+    const response = await axiosInstance.get('/auth/stream-token');
+    return { token: response.data.chatToken };
+};
 
 export const getProfile = async () => {
     const response = await axiosInstance.get('/users/profile');
@@ -113,4 +113,87 @@ export const blockUser = async (userId) => {
 export const unblockUser = async (userId) => {
   const response = await axiosInstance.delete(`/users/block/${userId}`);
   return response.data;
+};
+
+export const getUserPublicProfile = async (userId) => {
+    const response = await axiosInstance.get(`/users/${userId}`);
+    return response.data;
+};
+
+// Group APIs
+export const createGroup = async (groupData) => {
+    const response = await axiosInstance.post('/groups', groupData);
+    return response.data;
+};
+
+export const getPublicGroups = async () => {
+    const response = await axiosInstance.get('/groups/public');
+    return response.data;
+};
+
+export const getUserGroups = async () => {
+    const response = await axiosInstance.get('/groups/my-groups');
+    return response.data;
+};
+
+export const getGroupById = async (groupId) => {
+    const response = await axiosInstance.get(`/groups/${groupId}`);
+    return response.data;
+};
+
+export const joinGroup = async (groupId) => {
+    const response = await axiosInstance.post(`/groups/${groupId}/join`);
+    return response.data;
+};
+
+export const leaveGroup = async (groupId) => {
+    const response = await axiosInstance.post(`/groups/${groupId}/leave`);
+    return response.data;
+};
+
+export const updateGroup = async (groupId, updateData) => {
+    const response = await axiosInstance.put(`/groups/${groupId}`, updateData);
+    return response.data;
+};
+
+export const deleteGroup = async (groupId) => {
+    const response = await axiosInstance.delete(`/groups/${groupId}`);
+    return response.data;
+};
+
+export const searchGroups = async (params) => {
+    const queryParams = new URLSearchParams(params).toString();
+    const response = await axiosInstance.get(`/groups/search?${queryParams}`);
+      return response.data;
+};
+
+export const getAvailableRoles = async () => {
+    const response = await axiosInstance.get('/groups/roles');
+    return response.data;
+};
+
+// Promouvoir un membre
+export const promoteMember = async (groupId, memberId, newRole) => {
+    const response = await axiosInstance.post(`/groups/${groupId}/members/promote`, {
+        memberId,
+        newRole
+    });
+    return response.data;
+};
+
+// Rétrograder un membre
+export const demoteMember = async (groupId, memberId, newRole) => {
+    const response = await axiosInstance.post(`/groups/${groupId}/members/demote`, {
+        memberId,
+        newRole
+    });
+    return response.data;
+};
+
+// Supprimer un membre
+export const removeMember = async (groupId, memberId) => {
+    const response = await axiosInstance.post(`/groups/${groupId}/members/remove`, {
+        memberId
+    });
+    return response.data;
 };

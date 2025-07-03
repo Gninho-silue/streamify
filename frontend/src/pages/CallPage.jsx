@@ -83,10 +83,11 @@ const CallPage = () => {
     // Cleanup on unmount
     return () => {
       if (call) {
-        call.leave()
+        call.leave();
+
       }
       if (client) {
-        client.disconnectUser()
+        client.disconnectUser();
       }
     }
   }, [tokenData, authUser, callId, navigate])

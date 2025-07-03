@@ -4,7 +4,7 @@ import { useState } from "react"
 import { User, MapPin, Globe, MessageSquare, Plus, X, Save } from "lucide-react"
 import { LANGUAGES } from "../../constants"
 
-const ProfileInfo = ({ profile, onUpdate }) => {
+const ProfileInfo = ({ profile, onUpdate, isOwnProfile = false }) => {
     const [formData, setFormData] = useState({
         fullName: profile.fullName || "",
         bio: profile.bio || "",
@@ -59,6 +59,74 @@ const ProfileInfo = ({ profile, onUpdate }) => {
             e.preventDefault()
             handleAddInterest()
         }
+    }
+
+    if (!isOwnProfile) {
+        return (
+            <div className="space-y-8">
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-primary/10 rounded-2xl">
+                            <User className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold">Personal Information</h3>
+                            <p className="text-base-content/70">Basic details about this user</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <span className="font-medium">Full Name:</span> {profile.fullName}
+                        </div>
+                        <div>
+                            <span className="font-medium">Status:</span> {profile.status}
+                        </div>
+                        <div>
+                            <span className="font-medium">Location:</span> {profile.location}
+                        </div>
+                        <div>
+                            <span className="font-medium">Availability:</span> {profile.availability}
+                        </div>
+                    </div>
+                </div>
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-secondary/10 rounded-2xl">
+                            <Globe className="w-6 h-6 text-secondary" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold">Language Exchange</h3>
+                            <p className="text-base-content/70">Language learning journey</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <span className="font-medium">Native Language:</span> {profile.nativeLanguage}
+                        </div>
+                        <div>
+                            <span className="font-medium">Learning Language:</span> {profile.learningLanguage}
+                        </div>
+                    </div>
+                </div>
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-accent/10 rounded-2xl">
+                            <MessageSquare className="w-6 h-6 text-accent" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold">Bio & Interests</h3>
+                            <p className="text-base-content/70">About this user</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span className="font-medium">Bio:</span> {profile.bio}
+                    </div>
+                    <div>
+                        <span className="font-medium">Interests:</span> {profile.interests && profile.interests.length > 0 ? profile.interests.join(", ") : "None"}
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (

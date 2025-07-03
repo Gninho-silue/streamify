@@ -128,7 +128,7 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Profile Header */}
-                <ProfileHeader profile={profile} onUpdate={handleProfileUpdate} />
+                <ProfileHeader profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} />
 
                 {/* Tabs Section */}
                 <div className="mt-12">
@@ -171,8 +171,8 @@ const ProfilePage = () => {
                     <div className="card bg-base-100 shadow-xl border border-base-300">
                         <div className="card-body p-8">
                             <div className="animate-in slide-in-from-right-5 duration-300">
-                                {activeTab === "info" && <ProfileInfo profile={profile} onUpdate={handleProfileUpdate} />}
-                                {activeTab === "social" && <ProfileSocial profile={profile} onUpdate={handleProfileUpdate} />}
+                                {activeTab === "info" && <ProfileInfo profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} />}
+                                {activeTab === "social" && <ProfileSocial profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} />}
                                 {activeTab === "preferences" && (
                                     <ProfilePreferences preferences={profile.preferences} onUpdate={handlePreferencesUpdate} />
                                 )}

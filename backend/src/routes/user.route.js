@@ -12,7 +12,8 @@ import {
     updatePreferences,
     blockUser,
     unblockUser,
-    getBlockedUsers
+    getBlockedUsers,
+    getUserPublicProfile
 } from '../controllers/user.controller.js';
 
 const router = express.Router();
@@ -34,5 +35,7 @@ router.put("/preferences", protectedRoute, updatePreferences);
 router.post("/block/:userId", protectedRoute, blockUser);
 router.delete("/block/:userId", protectedRoute, unblockUser);
 router.get("/blocked", protectedRoute, getBlockedUsers);
+
+router.get("/:id", protectedRoute, getUserPublicProfile);
 
 export default router;

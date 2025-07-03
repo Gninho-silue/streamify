@@ -1,23 +1,55 @@
 "use client"
 
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { getMyFriends } from "../lib/api"
+import {useState} from "react"
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query"
+import {blockUser, getMyFriends} from "../lib/api"
 import FriendCard from "../components/FriendCard"
 import NoFriendsFound from "../components/NoFriendsFound"
-import { SearchIcon, Users, Heart, Globe, SortAscIcon, SortDescIcon, FilterIcon } from "lucide-react"
+import {FilterIcon, Globe, Heart, SearchIcon, SortAscIcon, SortDescIcon, Users} from "lucide-react"
+import {toast} from "react-hot-toast";
 
 const FriendsPage = () => {
+    const queryClient = useQueryClient()
     const [searchQuery, setSearchQuery] = useState("")
-    const [sortBy, setSortBy] = useState("name") // name, language, status
-    const [sortOrder, setSortOrder] = useState("asc") // asc, desc
+    const [sortBy, setSortBy] = useState("name")
+    const [sortOrder, setSortOrder] = useState("asc")
     const [filterByLanguage, setFilterByLanguage] = useState("")
     const [showFilters, setShowFilters] = useState(false)
+    const [pendingActionId, setPendingActionId] = useState(null)
+    const [currentAction, setCurrentAction] = useState(null)
 
     const { data: friends = [], isLoading } = useQuery({
         queryKey: ["friends"],
         queryFn: getMyFriends,
     })
+
+    // Block user mutation
+    const { mutate: blockUserMutation, isPending } = useMutation({
+        mutationFn: blockUser,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["friends"] })
+            queryClient.invalidateQueries({ queryKey: ["blockedUsers"] })
+            toast.success("User blocked successfully")
+            setPendingActionId(null)
+            setCurrentAction(null)
+        },
+        onError: (error) => {
+            toast.error(error.response?.data?.message || "Failed to block user")
+            setPendingActionId(null)
+            setCurrentAction(null)
+        },
+    })
+
+    // Handle card actions
+    const handleCardAction = (actionType, userId, userName) => {
+        if (actionType === 'block') {
+            if (window.confirm(`Are you sure you want to block ${userName}? You will not be able to message them or see their profile.`)) {
+                setPendingActionId(userId)
+                setCurrentAction('block')
+                blockUserMutation(userId)
+            }
+        }
+    }
 
     // Get unique languages for filter
     const uniqueLanguages = [...new Set(friends.flatMap((friend) => [friend.nativeLanguage, friend.learningLanguage]))]
@@ -291,12 +323,22 @@ const FriendsPage = () => {
                             )}
                         </div>
 
-                        {/* Friends Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+                        {/* Friends list */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {filteredAndSortedFriends.map((friend) => (
-                                <FriendCard key={friend._id} friend={friend} />
+                                <FriendCard
+                                    key={friend._id}
+                                    user={friend}
+                                    cardType="friend"
+                                    onAction={handleCardAction}
+                                    isPending={isPending && pendingActionId === friend._id}
+                                    pendingAction={currentAction}
+                                />
                             ))}
                         </div>
+
+
                     </>
                 )}
             </div>

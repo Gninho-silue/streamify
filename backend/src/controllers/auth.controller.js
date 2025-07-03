@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import { upsertStreamUser } from "../lib/stream.js";
+import { upsertStreamUser, generateStreamToken } from "../lib/stream.js";
 import e from "express";
 
 
@@ -86,11 +86,11 @@ export async function login(req, res) {
         const token = jwt.sign(
             { userId: user._id },
             process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "2d" }
         );
 
         res.cookie("token", token, {
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
             httpOnly: true, // Prevent XSS attacks by not allowing client-side scripts to access the cookie
             sameSite: "strict", // Helps prevent CSRF attacks
             secure: process.env.NODE_ENV === "production", // Use secure cookies in production
@@ -151,5 +151,39 @@ export async function onboard(req, res) {
     } catch (error) {
         console.error("Onboarding error:", error);
         res.status(500).json( { message: "Internal Server Error"})
+    }
+}
+
+// Generate Stream.io tokens
+export async function getStreamTokens(req, res) {
+    try {
+        const userId = req.user._id.toString();
+        const user = await User.findById(userId);
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Generate Stream Chat token
+        const chatToken = generateStreamToken(userId);
+        
+        // Generate Stream Video token (same token can be used for both)
+        const videoToken = generateStreamToken(userId);
+
+        // Upsert user to Stream
+        await upsertStreamUser({
+            id: userId,
+            name: user.fullName,
+            image: user.profilePicture,
+        });
+
+        res.status(200).json({
+            chatToken,
+            videoToken,
+            userId: userId.toString()
+        });
+    } catch (error) {
+        console.error("Error generating Stream tokens:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }

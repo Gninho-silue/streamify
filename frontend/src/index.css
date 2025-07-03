@@ -11,8 +11,8 @@
 }
 
 .str-chat__container {
-  max-width: 1200px !important;
-  width: 100%;
+  max-width: 1200px;
+  width: 100% !important;
   height: 80% !important;
   margin: 0 auto !important;
   border-radius: 8px;
@@ -31,4 +31,122 @@
 
 .str-chat__message-input {
   border-top: 1px solid #ddd;
+}
+
+/* Stream Chat - Styles spécifiques pour corriger les problèmes de mise en page */
+.str-chat {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.str-chat__container {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.str-chat.messaging,
+.str-chat.commerce,
+.str-chat.team,
+.str-chat.livestream {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.str-chat-channel {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.str-chat__main-panel {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.str-chat__thread {
+  width: 30% !important;
+  height: 100% !important;
+}
+
+.str-chat__thread-list {
+  height: calc(100% - 65px) !important;
+}
+
+.str-chat__message-list-scroll {
+  height: 100% !important;
+}
+
+.str-chat__message-list {
+  flex: 1 !important;
+}
+
+.str-chat__window {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Supprimer certaines limitations de taille */
+.str-chat .str-chat__container {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Améliorer la gestion du débordement */
+.str-chat__list {
+  overflow-y: auto !important;
+  flex: 1 !important;
+}
+
+/* Styles pour les chats directs (one-to-one) */
+.str-chat-channel-list {
+  width: 100% !important;
+}
+
+.str-chat__container {
+  height: 100% !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.str-chat__main-panel {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.str-chat__thread {
+  width: 30% !important;
+  min-width: 300px !important;
+  height: 100% !important;
+}
+
+.str-chat__message-list-scroll {
+  height: 100% !important;
+}
+
+/* Force les messages à prendre plus d'espace */
+.str-chat__message-list {
+  flex: 1 !important;
+  padding: 1rem !important;
+}
+
+/* Style le conteneur d'entrée de message */
+.str-chat__messaging-input {
+  padding: 0.5rem !important;
+  background-color: white !important;
+}
+
+/* S'assurer que le conteneur principal est en flex et prend toute la hauteur */
+.str-chat,
+.str-chat__channel {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Ajuster la fenêtre principale */
+.str-chat__window {
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
 }

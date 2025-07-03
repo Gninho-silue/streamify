@@ -21,90 +21,126 @@ import {
   Monitor,
   Smartphone,
   Settings,
+  Group,
 } from "lucide-react"
 
 const features = [
   {
-    title: "Chat instantané",
-    desc: "Discutez en temps réel avec vos amis et collègues dans un environnement sécurisé.",
-    icon: <MessageCircle className="w-8 h-8" />,
+    title: "Instant Messaging",
+    desc: "Chat in real time with friends and colleagues in a secure environment.",
+    icon: <MessageCircle className="w-8 h-8" />, 
     color: "text-primary",
     gradient: "from-primary/20 to-secondary/10",
   },
   {
-    title: "Appels vidéo HD",
-    desc: "Passez des appels vidéo cristallins avec une qualité professionnelle.",
-    icon: <Video className="w-8 h-8" />,
+    title: "HD Video Calls",
+    desc: "Enjoy crystal-clear video calls with professional quality.",
+    icon: <Video className="w-8 h-8" />, 
     color: "text-secondary",
     gradient: "from-secondary/20 to-accent/10",
   },
   {
-    title: "Notifications intelligentes",
-    desc: "Restez informé avec des notifications personnalisées et contextuelles.",
-    icon: <Bell className="w-8 h-8" />,
+    title: "Smart Notifications",
+    desc: "Stay informed with personalized and contextual notifications.",
+    icon: <Bell className="w-8 h-8" />, 
     color: "text-accent",
     gradient: "from-accent/20 to-info/10",
   },
   {
-    title: "Profils avancés",
-    desc: "Créez un profil riche avec vos préférences et centres d'intérêt.",
-    icon: <User className="w-8 h-8" />,
+    title: "Advanced Profiles",
+    desc: "Create a rich profile with your preferences and interests.",
+    icon: <User className="w-8 h-8" />, 
     color: "text-info",
     gradient: "from-info/20 to-warning/10",
+  },
+  {
+    title: "Group Learning",
+    desc: "Join or create learning groups, chat, share resources, and practice together.",
+    icon: <Group className="w-8 h-8" />,
+    color: "text-success",
+    gradient: "from-success/20 to-primary/10",
+  },
+  {
+    title: "Public User Profiles",
+    desc: "Showcase your language journey and connect with learners worldwide.",
+    icon: <User className="w-8 h-8" />,
+    color: "text-warning",
+    gradient: "from-warning/20 to-secondary/10",
+  },
+  {
+    title: "Member Management",
+    desc: "Admins can promote, demote, or remove members for a safe and dynamic community.",
+    icon: <Shield className="w-8 h-8" />,
+    color: "text-error",
+    gradient: "from-error/20 to-accent/10",
   },
 ]
 
 const testimonials = [
   {
     name: "Marie Dubois",
-    role: "Étudiante en langues",
-    avatar: "https://avatar.iran.liara.run/public/${90}",
+    role: "Language Student",
+    avatar: "https://avatar.iran.liara.run/public/90",
     content:
-        "Streamify a révolutionné ma façon d'apprendre les langues. Les conversations sont naturelles et enrichissantes !",
+      "Streamify has revolutionized my language learning. The group conversations are natural and enriching!",
     rating: 5,
   },
   {
     name: "Jean Martin",
-    role: "Professeur",
-    avatar: "https://avatar.iran.liara.run/public/${23}",
+    role: "Teacher",
+    avatar: "https://avatar.iran.liara.run/public/23",
     content:
-        "Une plateforme exceptionnelle pour connecter mes étudiants du monde entier. Interface intuitive et fonctionnalités complètes.",
+      "An outstanding platform to connect my students worldwide. Intuitive interface and complete features.",
     rating: 5,
   },
   {
     name: "Sofia Rodriguez",
-    role: "Développeuse",
-    avatar: "https://avatar.iran.liara.run/public/${45}",
-    content: "La qualité des appels vidéo est impressionnante. Parfait pour mes sessions de mentorat international.",
+    role: "Developer",
+    avatar: "https://avatar.iran.liara.run/public/45",
+    content: "The video call quality is impressive. Perfect for my international mentoring sessions.",
+    rating: 5,
+  },
+  {
+    name: "Ava Lee",
+    role: "Group Admin",
+    avatar: "https://avatar.iran.liara.run/public/12",
+    content: "Managing my language group is so easy with Streamify's member management tools!",
     rating: 5,
   },
 ]
 
 const stats = [
-  { number: "50K+", label: "Utilisateurs actifs", icon: <Users className="w-6 h-6" /> },
-  { number: "120+", label: "Pays représentés", icon: <Globe className="w-6 h-6" /> },
-  { number: "1M+", label: "Messages échangés", icon: <MessageCircle className="w-6 h-6" /> },
-  { number: "99.9%", label: "Temps de disponibilité", icon: <Zap className="w-6 h-6" /> },
+  { number: "50K+", label: "Active users", icon: <Users className="w-6 h-6" /> },
+  { number: "120+", label: "Countries represented", icon: <Globe className="w-6 h-6" /> },
+  { number: "1M+", label: "Messages exchanged", icon: <MessageCircle className="w-6 h-6" /> },
+  { number: "99.9%", label: "Uptime", icon: <Zap className="w-6 h-6" /> },
+  { number: "2K+", label: "Active learning groups", icon: <Group className="w-6 h-6" /> },
 ]
 
 const appScreenshots = [
   {
-    title: "Page d'accueil",
-    description: "Découvrez votre communauté et connectez-vous facilement",
+    title: "Home Page",
+    description: "Discover your community and connect easily",
     image: "/home.png",
-    features: ["Recherche avancée", "Filtres intelligents", "Statistiques en temps réel"],
+    features: ["Advanced search", "Smart filters", "Real-time stats"],
   },
   {
-    title: "Profil utilisateur",
-    description: "Personnalisez votre expérience et gérez vos préférences",
+    title: "User Profile",
+    description: "Personalize your experience and manage your preferences",
     image: "/profile.png",
-    features: ["Profil complet", "Préférences avancées", "Réseaux sociaux"],
+    features: ["Complete profile", "Advanced preferences", "Social networks"],
   },
   {
-    title: "Paramètres",
-    description: "Contrôlez tous les aspects de votre compte",
+    title: "Group Chat",
+    description: "Collaborate and learn together in real time",
+    image: "/group-chat.png",
+    features: ["Group messaging", "File sharing", "Practice sessions"],
+  },
+  {
+    title: "Settings",
+    description: "Control every aspect of your account",
     image: "/settings.png",
-    features: ["Sécurité avancée", "Notifications", "Thèmes personnalisés"],
+    features: ["Advanced security", "Notifications", "Custom themes"],
   },
 ]
 
@@ -167,16 +203,16 @@ export default function LandingPage() {
           <div className="navbar-center hidden lg:flex">
             <nav className="menu menu-horizontal px-1 gap-2">
               <a href="#features" className="btn btn-ghost btn-sm">
-                Fonctionnalités
+                Features
               </a>
               <a href="#why" className="btn btn-ghost btn-sm">
-                Pourquoi ?
+                Why Streamify?
               </a>
               <a href="#screenshots" className="btn btn-ghost btn-sm">
-                Interface
+                App Screenshots
               </a>
               <a href="#testimonials" className="btn btn-ghost btn-sm">
-                Témoignages
+                Testimonials
               </a>
               <a href="#contact" className="btn btn-ghost btn-sm">
                 Contact
@@ -186,11 +222,11 @@ export default function LandingPage() {
 
           <div className="navbar-end gap-2">
             <Link to="/login" className="btn btn-ghost btn-sm">
-              Connexion
+              Login
             </Link>
             <Link to="/signup" className="btn btn-primary btn-sm gap-2">
               <Rocket className="w-4 h-4" />
-              S'inscrire
+              Sign Up
             </Link>
           </div>
         </header>
@@ -211,29 +247,28 @@ export default function LandingPage() {
             <div className="max-w-4xl">
               <div className="badge badge-primary badge-lg gap-2 mb-6 animate-bounce">
                 <Sparkles className="w-4 h-4" />
-                Nouvelle génération de communication
+                Next-generation communication
               </div>
 
               <h1 className="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent leading-tight">
-                Connectez-vous.
+                Connect.
                 <br />
-                <span className="text-4xl md:text-6xl">Partagez. Collaborez.</span>
+                <span className="text-4xl md:text-6xl">Share. Collaborate.</span>
               </h1>
 
               <p className="text-xl md:text-2xl mb-8 text-base-content/80 max-w-3xl mx-auto leading-relaxed">
-                La plateforme moderne pour apprendre, communiquer et créer des liens authentiques avec des personnes du
-                monde entier.
+                The modern platform to learn, communicate, and build authentic connections with people from all over the world.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
                 <Link to="/signup" className="btn btn-primary btn-lg gap-3 group shadow-2xl">
                   <Rocket className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                  Commencer gratuitement
+                  Get Started Free
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
                 </Link>
                 <button className="btn btn-outline btn-lg gap-3 group">
                   <Play className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                  Voir la démo
+                  See Demo
                 </button>
               </div>
 
@@ -264,13 +299,13 @@ export default function LandingPage() {
             <div className="text-center mb-16">
               <div className="badge badge-secondary badge-lg gap-2 mb-4">
                 <Star className="w-4 h-4" />
-                Fonctionnalités
+                Features
               </div>
               <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
-                Tout ce dont vous avez besoin
+                Everything you need
               </h2>
               <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
-                Des outils puissants et intuitifs pour une expérience de communication exceptionnelle
+                Powerful and intuitive tools for an exceptional communication experience
               </p>
             </div>
 
@@ -304,11 +339,11 @@ export default function LandingPage() {
             <div className="text-center mb-16">
               <div className="badge badge-accent badge-lg gap-2 mb-4">
                 <Monitor className="w-4 h-4" />
-                Interface
+                App Screenshots
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">Découvrez notre application</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">Discover our application</h2>
               <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
-                Une interface moderne et intuitive conçue pour une expérience utilisateur exceptionnelle
+                A modern and intuitive interface designed for an outstanding user experience
               </p>
             </div>
 
@@ -341,7 +376,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-lg">Fonctionnalités clés :</h4>
+                  <h4 className="font-semibold text-lg">Key features:</h4>
                   {appScreenshots[currentScreenshot].features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-3">
                         <div className="w-2 h-2 bg-primary rounded-full"></div>
@@ -370,18 +405,18 @@ export default function LandingPage() {
               {[
                 {
                   icon: <Smartphone className="w-8 h-8" />,
-                  title: "Application mobile",
-                  desc: "Disponible sur iOS et Android avec toutes les fonctionnalités",
+                  title: "Mobile App",
+                  desc: "Available on iOS and Android with all features",
                 },
                 {
                   icon: <Monitor className="w-8 h-8" />,
-                  title: "Version web",
-                  desc: "Accédez à votre compte depuis n'importe quel navigateur",
+                  title: "Web Version",
+                  desc: "Access your account from any browser",
                 },
                 {
                   icon: <Settings className="w-8 h-8" />,
-                  title: "Personnalisation",
-                  desc: "Adaptez l'interface selon vos préférences et besoins",
+                  title: "Customization",
+                  desc: "Adapt the interface to your preferences and needs",
                 },
               ].map((item, index) => (
                   <div
@@ -404,11 +439,11 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="badge badge-info badge-lg gap-2 mb-4">
               <Heart className="w-4 h-4" />
-              Témoignages
+              Testimonials
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Ce que disent nos utilisateurs</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">What our users say</h2>
             <p className="text-xl text-base-content/70 mb-12">
-              Rejoignez des milliers d'utilisateurs satisfaits dans le monde entier
+              Join thousands of satisfied users around the world
             </p>
 
             <div className="card bg-base-100 shadow-2xl border border-base-300 max-w-2xl mx-auto">
@@ -460,11 +495,11 @@ export default function LandingPage() {
             <div className="text-center mb-16">
               <div className="badge badge-warning badge-lg gap-2 mb-4">
                 <Shield className="w-4 h-4" />
-                Avantages
+                Why Streamify?
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">Pourquoi choisir Streamify ?</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">Why choose Streamify?</h2>
               <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
-                Une plateforme conçue avec vos besoins au cœur de nos priorités
+                A platform designed with your needs at the heart of our priorities
               </p>
             </div>
 
@@ -472,20 +507,20 @@ export default function LandingPage() {
               {[
                 {
                   icon: <Shield className="w-8 h-8" />,
-                  title: "Sécurité & Confidentialité",
-                  desc: "Chiffrement de bout en bout et protection maximale de vos données personnelles.",
+                  title: "Security & Privacy",
+                  desc: "End-to-end encryption and maximum protection of your personal data.",
                   color: "text-success",
                 },
                 {
                   icon: <Zap className="w-8 h-8" />,
-                  title: "Simplicité d'utilisation",
-                  desc: "Interface intuitive et moderne pensée pour tous les niveaux d'utilisateurs.",
+                  title: "Ease of Use",
+                  desc: "Intuitive and modern interface designed for all user levels.",
                   color: "text-warning",
                 },
                 {
                   icon: <Users className="w-8 h-8" />,
-                  title: "Communauté active",
-                  desc: "Rejoignez une communauté mondiale dynamique et bienveillante.",
+                  title: "Active Community",
+                  desc: "Join a dynamic and welcoming global community.",
                   color: "text-info",
                 },
               ].map((item, index) => (
@@ -510,19 +545,19 @@ export default function LandingPage() {
         <section className="py-24 px-4 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Prêt à commencer ?
+              Ready to get started?
             </h2>
             <p className="text-xl text-base-content/80 mb-8 max-w-2xl mx-auto">
-              Rejoignez des milliers d'utilisateurs qui font déjà confiance à Streamify pour leurs communications
+              Join thousands of users who already trust Streamify for their communications
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/signup" className="btn btn-primary btn-lg gap-3 shadow-2xl group">
                 <Rocket className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                Créer un compte gratuit
+                Create a Free Account
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
               <Link to="/login" className="btn btn-outline btn-lg">
-                J'ai déjà un compte
+                I already have an account
               </Link>
             </div>
           </div>
@@ -531,16 +566,16 @@ export default function LandingPage() {
         {/* Contact Section */}
         <section id="contact" className="py-24 px-4 bg-base-100">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">Nous contacter</h2>
+            <h2 className="text-4xl font-bold mb-6">Contact Us</h2>
             <p className="text-lg text-base-content/70 mb-8">
-              Une question ? Un retour ? Notre équipe est là pour vous aider
+              Questions or feedback? Our team is here to help
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {[
                 { label: "Email", value: "contact@streamify.com", href: "mailto:contact@streamify.com" },
                 { label: "Twitter", value: "@StreamifyApp", href: "https://twitter.com/" },
-                { label: "Support", value: "Centre d'aide", href: "#" },
+                { label: "Support", value: "Help Center", href: "#" },
               ].map((contact, index) => (
                   <a
                       key={index}
@@ -561,16 +596,16 @@ export default function LandingPage() {
         <footer className="footer footer-center p-10 bg-base-300 text-base-content">
           <div className="grid grid-flow-col gap-4">
             <a href="#features" className="link link-hover">
-              Fonctionnalités
+              Features
             </a>
             <a href="#why" className="link link-hover">
-              Pourquoi ?
+              Why Streamify?
             </a>
             <a href="#screenshots" className="link link-hover">
-              Interface
+              App Screenshots
             </a>
             <a href="#testimonials" className="link link-hover">
-              Témoignages
+              Testimonials
             </a>
             <a href="#contact" className="link link-hover">
               Contact
@@ -578,10 +613,10 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-flow-col gap-4">
             <a href="#" className="link link-hover">
-              Politique de confidentialité
+              Privacy Policy
             </a>
             <a href="#" className="link link-hover">
-              Conditions d'utilisation
+              Terms of Use
             </a>
             <a href="#" className="link link-hover">
               Support
@@ -596,7 +631,7 @@ export default function LandingPage() {
             <span className="font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Streamify
           </span>
-            <span>© {new Date().getFullYear()} - Tous droits réservés</span>
+            <span>© {new Date().getFullYear()} - All rights reserved</span>
           </div>
         </footer>
       </div>

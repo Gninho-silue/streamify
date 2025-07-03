@@ -2,7 +2,7 @@
 
 import { Link, useLocation } from "react-router"
 import useAuthUser from "../hooks/useAuthUser"
-import { BellIcon, HomeIcon, ShipWheelIcon, UserIcon, SettingsIcon, BanIcon, Sparkles } from "lucide-react"
+import { BellIcon, HomeIcon, ShipWheelIcon, UserIcon, SettingsIcon, BanIcon, Sparkles, Users2 } from "lucide-react"
 
 const Sidebar = () => {
     const { authUser } = useAuthUser()
@@ -19,8 +19,14 @@ const Sidebar = () => {
         {
             path: "/friends",
             icon: UserIcon,
-            label: "Friends",
+            label: "My Friends",
             description: "Your learning partners",
+        },
+        {
+            path: "/my-groups",
+            icon: Users2,
+            label: "My Groups",
+            description: "Your communities",
         },
         {
             path: "/notifications",
@@ -55,7 +61,7 @@ const Sidebar = () => {
 
     const availabilityConfig = getAvailabilityConfig(authUser?.availability)
 
-    return (
+  return (
         <aside className="w-64 bg-base-100 border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-0 shadow-lg">
             {/* Header with Logo */}
             <div className="p-6 border-b border-base-300 bg-gradient-to-r from-primary/5 to-secondary/5">
@@ -65,12 +71,12 @@ const Sidebar = () => {
                     </div>
                     <div>
             <span className="text-2xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
-              Streamify
-            </span>
+            Streamify
+          </span>
                         <p className="text-xs text-base-content/60 font-medium">Language Exchange</p>
                     </div>
-                </Link>
-            </div>
+        </Link>
+      </div>
 
             {/* Navigation */}
             <nav className="flex-1 overflow-y-auto py-4">
@@ -130,7 +136,7 @@ const Sidebar = () => {
 
                                     {/* Active indicator */}
                                     {isActive && <div className="w-1 h-8 bg-white/30 rounded-full" />}
-                                </Link>
+            </Link>
 
                                 {/* Hover effect background */}
                                 {!isActive && (
@@ -140,13 +146,13 @@ const Sidebar = () => {
                         )
                     })}
                 </div>
-            </nav>
+      </nav>
 
             {/* User Profile Section */}
             <div className="p-4 border-t border-base-300 bg-gradient-to-r from-base-200/50 to-base-300/30">
                 <div className="card bg-base-100 shadow-md hover:shadow-lg transition-all duration-300 group">
                     <div className="card-body p-4">
-                        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
                             <div className="avatar indicator">
                                 <div className="w-12 h-12 rounded-2xl ring ring-primary/20 ring-offset-base-100 ring-offset-2 group-hover:ring-primary/40 transition-all duration-300">
                                     <img
@@ -172,18 +178,18 @@ const Sidebar = () => {
                                 <div className="flex items-center gap-2 mt-1">
                                     <div className={`w-2 h-2 rounded-full ${availabilityConfig.color} ${availabilityConfig.pulse}`} />
                                     <span className="text-xs text-base-content/60 font-medium">{availabilityConfig.text}</span>
-                                </div>
-                            </div>
-
+            </div>
+          </div>
+           
                             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <Sparkles className="w-4 h-4 text-primary/60" />
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    )
+          </div>  
+        </div>
+      </div>
+    </aside>
+  )
 }
 
 export default Sidebar

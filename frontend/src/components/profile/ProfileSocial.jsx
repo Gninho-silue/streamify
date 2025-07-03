@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Github, Linkedin, Twitter, Globe, Save, ExternalLink } from "lucide-react"
 
-const ProfileSocial = ({ profile, onUpdate }) => {
+const ProfileSocial = ({ profile, onUpdate, isOwnProfile = false }) => {
     const [formData, setFormData] = useState({
         socialLinks: {
             website: profile.socialLinks?.website || "",
@@ -77,6 +77,52 @@ const ProfileSocial = ({ profile, onUpdate }) => {
         } catch {
             return false
         }
+    }
+
+    if (!isOwnProfile) {
+        // Affichage lecture seule
+        const socialLinks = profile.socialLinks || {};
+        const platforms = [
+            { key: "website", label: "Website" },
+            { key: "twitter", label: "Twitter" },
+            { key: "linkedin", label: "LinkedIn" },
+            { key: "github", label: "GitHub" },
+        ];
+        return (
+            <div className="space-y-8">
+                <div className="text-center">
+                    <div className="flex items-center gap-3 justify-center mb-4">
+                        <div className="p-3 bg-secondary/10 rounded-2xl">
+                            <ExternalLink className="w-6 h-6 text-secondary" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold">Social Connections</h3>
+                            <p className="text-base-content/70">Connect with this user</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-wrap gap-3 justify-center">
+                    {platforms.map((platform) => {
+                        const url = socialLinks[platform.key];
+                        if (!url) return null;
+                        return (
+                            <a
+                                key={platform.key}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-outline gap-2 hover:scale-105 transition-all duration-300"
+                            >
+                                {platform.label}
+                            </a>
+                        );
+                    })}
+                    {!platforms.some((p) => socialLinks[p.key]) && (
+                        <p className="text-base-content/70 italic">No social links provided</p>
+                    )}
+                </div>
+            </div>
+        );
     }
 
     return (

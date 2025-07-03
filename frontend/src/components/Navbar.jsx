@@ -51,7 +51,7 @@ const Navbar = () => {
     setIsUserMenuOpen(false)
     logoutMutation()
   }
-
+  
   return (
       <nav className="bg-base-100 border-b border-base-300 sticky top-0 z-30 h-16 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
@@ -65,13 +65,13 @@ const Navbar = () => {
                     </div>
                     <div className="hidden sm:block">
                   <span className="text-2xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
-                    Streamify
-                  </span>
+                  Streamify
+                </span>
                       <p className="text-xs text-base-content/60 font-medium -mt-1">Language Exchange</p>
                     </div>
-                  </Link>
-                </div>
-            )}
+              </Link>
+            </div>
+          )}
 
             {/* Right Side Actions */}
             <div className="flex items-center gap-2 sm:gap-4 ml-auto">
@@ -88,9 +88,9 @@ const Navbar = () => {
                           <div className="absolute inset-0 bg-error rounded-full animate-ping opacity-75" />
                         </div>
                     )}
-                  </button>
-                </Link>
-              </div>
+              </button>
+            </Link>
+          </div>
 
               {/* Theme Selector */}
               <div className="hidden sm:block">
@@ -134,9 +134,9 @@ const Navbar = () => {
                       {/* User Info Header */}
                       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 px-4 py-4 border-b border-base-300">
                         <div className="flex items-center gap-3">
-                          <div className="avatar">
+            <div className="avatar">
                             <div className="w-12 h-12 rounded-2xl ring ring-primary/30 ring-offset-base-100 ring-offset-2">
-                              <img src={authUser?.profilePicture || "/default-avatar.png"} alt="User Avatar" />
+                <img src={authUser?.profilePicture || "/default-avatar.png"} alt="User Avatar" />
                             </div>
                           </div>
                           <div className="flex-1 min-w-0">
@@ -215,9 +215,9 @@ const Navbar = () => {
                 )}
               </div>
             </div>
-          </div>
         </div>
-      </nav>
+      </div>
+    </nav>
   )
 }
 
