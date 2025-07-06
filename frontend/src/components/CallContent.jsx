@@ -40,7 +40,7 @@ const CallContent = ({ callType = "video", onLeave }) => {
     useEffect(() => {
         if (callingState === CallingState.LEFT) {
             onLeave?.()
-            return navigate("/")
+            return navigate(-1)
         }
     }, [callingState, navigate, onLeave])
 

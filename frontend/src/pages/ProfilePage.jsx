@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getProfile, updateProfile, updatePreferences } from "../lib/api"
 import toast from "react-hot-toast"
@@ -9,11 +9,12 @@ import ProfileInfo from "../components/profile/ProfileInfo"
 import ProfilePreferences from "../components/profile/ProfilePreferences"
 import ProfileSocial from "../components/profile/ProfileSocial"
 import ProfileLoader from "../components/profile/ProfileLoader"
-import { User, Settings, Link2, Sparkles, Shield } from "lucide-react"
+import { User, Settings, Link2, Sparkles, Shield, AlertTriangle } from "lucide-react"
 
 const ProfilePage = () => {
     const [activeTab, setActiveTab] = useState("info")
     const queryClient = useQueryClient()
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
     const { data: profile, isLoading } = useQuery({
         queryKey: ["profile"],
@@ -29,6 +30,7 @@ const ProfilePage = () => {
                 duration: 4000,
                 icon: "🎉",
             })
+            setHasUnsavedChanges(false)
         },
         onError: (error) => {
             console.error("Profile update error:", error)
@@ -49,6 +51,7 @@ const ProfilePage = () => {
                 duration: 4000,
                 icon: "✅",
             })
+            setHasUnsavedChanges(false)
         },
         onError: (error) => {
             console.error("Preferences update error:", error)
@@ -58,21 +61,30 @@ const ProfilePage = () => {
         },
     })
 
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = "";
+            }
+        };
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, [hasUnsavedChanges]);
+
     if (isLoading) return <ProfileLoader />
 
     const handleProfileUpdate = (data) => {
         try {
-            // Validation basique des données
             if (data.fullName && data.fullName.trim().length < 2) {
                 toast.error("Full name must be at least 2 characters long")
                 return
             }
-
             if (data.bio && data.bio.length > 500) {
                 toast.error("Bio must be less than 500 characters")
                 return
             }
-
+            setHasUnsavedChanges(true)
             updateProfileMutation.mutate(data)
         } catch (error) {
             console.error("Profile update validation error:", error)
@@ -82,6 +94,7 @@ const ProfilePage = () => {
 
     const handlePreferencesUpdate = (data) => {
         try {
+            setHasUnsavedChanges(true)
             updatePreferencesMutation.mutate(data)
         } catch (error) {
             console.error("Preferences update error:", error)
@@ -127,8 +140,27 @@ const ProfilePage = () => {
                     </p>
                 </div>
 
+                
+
                 {/* Profile Header */}
-                <ProfileHeader profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} />
+                <ProfileHeader profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} onChange={() => setHasUnsavedChanges(true)} />
+                
+                {hasUnsavedChanges && (
+                <div className="alert alert-warning shadow-lg mb-6 animate-in slide-in-from-top duration-300">
+                     <AlertTriangle className="w-5 h-5" />
+                    <div className="flex-1">
+                    <h3 className="font-bold">Unsaved Changes</h3>
+                    <div className="text-sm opacity-80">
+                        You have unsaved changes that will be lost if you leave this page.
+                    </div>
+                    </div>
+                    <div className="flex gap-2">
+                    <button className="btn btn-sm btn-ghost" onClick={() => setHasUnsavedChanges(false)}>
+                        Discard
+                    </button>
+                    </div>
+                </div>
+                )}
 
                 {/* Tabs Section */}
                 <div className="mt-12">
@@ -171,10 +203,10 @@ const ProfilePage = () => {
                     <div className="card bg-base-100 shadow-xl border border-base-300">
                         <div className="card-body p-8">
                             <div className="animate-in slide-in-from-right-5 duration-300">
-                                {activeTab === "info" && <ProfileInfo profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} />}
-                                {activeTab === "social" && <ProfileSocial profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} />}
+                                {activeTab === "info" && <ProfileInfo profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} onChange={() => setHasUnsavedChanges(true)} />}
+                                {activeTab === "social" && <ProfileSocial profile={profile} onUpdate={handleProfileUpdate} isOwnProfile={true} onChange={() => setHasUnsavedChanges(true)} />}
                                 {activeTab === "preferences" && (
-                                    <ProfilePreferences preferences={profile.preferences} onUpdate={handlePreferencesUpdate} />
+                                    <ProfilePreferences preferences={profile.preferences} onUpdate={handlePreferencesUpdate} onChange={() => setHasUnsavedChanges(true)} />
                                 )}
                             </div>
                         </div>
@@ -196,6 +228,7 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     )

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Github, Linkedin, Twitter, Globe, Save, ExternalLink } from "lucide-react"
 
-const ProfileSocial = ({ profile, onUpdate, isOwnProfile = false }) => {
+const ProfileSocial = ({ profile, onUpdate, isOwnProfile = false, onChange }) => {
     const [formData, setFormData] = useState({
         socialLinks: {
             website: profile.socialLinks?.website || "",
@@ -23,6 +23,9 @@ const ProfileSocial = ({ profile, onUpdate, isOwnProfile = false }) => {
                 [name]: value,
             },
         }))
+        if (typeof onChange === "function") {
+            onChange()
+        }   
     }
 
     const handleSubmit = async (e) => {
@@ -32,6 +35,9 @@ const ProfileSocial = ({ profile, onUpdate, isOwnProfile = false }) => {
             await onUpdate({ socialLinks: formData.socialLinks })
         } finally {
             setIsSubmitting(false)
+        }
+        if (typeof onChange === "function") {
+            onChange()
         }
     }
 

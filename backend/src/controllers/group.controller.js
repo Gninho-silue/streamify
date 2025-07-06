@@ -1,5 +1,5 @@
 import Group from '../models/Group.js';
-import { createChannel, addMembersToChannel } from '../lib/stream.js';
+import { createChannel, addMembersToChannel, removeMemberFromChannel } from '../lib/stream.js';
 
 // Créer un nouveau groupe
 export async function createGroup(req, res) {
@@ -18,20 +18,6 @@ export async function createGroup(req, res) {
             tags,
             rules
         } = req.body;
-
-        console.log('Received group data:', {
-            name,
-            description,
-            nativeLanguage,
-            learningLanguage,
-            level,
-            image: image ? 'Image present (base64)' : 'No image',
-            coverImage: coverImage ? 'Cover image present (base64)' : 'No cover image',
-            maxMembers,
-            isPrivate,
-            tags,
-            rules
-        });
 
         const userId = req.user.id;
 
@@ -196,10 +182,8 @@ export async function leaveGroup(req, res) {
         group.removeMember(userId);
         await group.save();
 
-        // AJOUT: Supprimer le membre du canal Stream
+        // Supprimer le membre du canal Stream
         try {
-            // Importez la fonction nécessaire pour supprimer un membre du canal
-            const { removeMemberFromChannel } = await import('../lib/stream.js');
             await removeMemberFromChannel(`group_${group._id}`, userId);
         } catch (streamError) {
             console.error('Error removing member from Stream channel:', streamError);
@@ -377,10 +361,8 @@ export async function removeMember(req, res) {
         await group.save();
         await group.populate('members.user', 'fullName profilePicture');
 
-        // AJOUT: Supprimer le membre du canal Stream
+        // Supprimer le membre du canal Stream
         try {
-            // Importez la fonction nécessaire pour supprimer un membre du canal
-            const { removeMemberFromChannel } = await import('../lib/stream.js');
             await removeMemberFromChannel(`group_${group._id}`, memberId);
         } catch (streamError) {
             console.error('Error removing member from Stream channel:', streamError);

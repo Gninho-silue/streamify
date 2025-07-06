@@ -24,20 +24,12 @@ import {
 } from "lucide-react"
 import {LANGUAGES} from "../../constants/index.js";
 import {compressImage, formatFileSize, validateImageFile} from "../../utils/imageUtils.js";
+import ImageUploadField from "./ImageUploadField";
 
-const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCancel }) => {
+const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCancel, onFormChange }) => {
   const [currentStep, setCurrentStep] = useState(1)
   const [showPreview, setShowPreview] = useState(false)
   const [templateApplied, setTemplateApplied] = useState(false)
-  const profileInputRef = useRef(null);
-  const coverInputRef = useRef(null);
-
-  // État pour le processus de compression
-  const [compressingProfile, setCompressingProfile] = useState(false)
-  const [compressingCover, setCompressingCover] = useState(false)
-
-
-
   const [appliedTemplateName, setAppliedTemplateName] = useState("")
   const [formData, setFormData] = useState({
     name: initialData.name || "",
@@ -59,15 +51,6 @@ const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCanc
   const [validationErrors, setValidationErrors] = useState({})
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [editingTemplate, setEditingTemplate] = useState(false)
-
-  // Pour pre-visualiser les images
-  const [profileImagePreview, setProfileImagePreview] = useState(initialData.image || null)
-  const [coverImagePreview, setCoverImagePreview] = useState(initialData.coverImage || null)
-
-
-  // Files sizes infos
-  const [profileImageInfo, setProfileImageInfo] = useState(null);
-  const [coverImageInfo, setCoverImageInfo] = useState(null);
 
   // Track unsaved changes
   useEffect(() => {
@@ -99,106 +82,6 @@ const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCanc
     setValidationErrors(errors)
     return Object.keys(errors).length === 0
   }
-
-  // Gestionnaires pour les images avec compression
-  const handleProfileImageChange = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    try {
-      // Valider le fichier
-      validateImageFile(file)
-
-      setCompressingProfile(true)
-      setProfileImageInfo({
-        name: file.name,
-        type: file.type,
-        originalSize: formatFileSize(file.size)
-      })
-
-      // Compresser l'image (dimensions plus petites pour l'avatar)
-      const compressedDataUrl = await compressImage(file, 400, 400, 0.8)
-
-      // Mettre à jour l'état avec le base64 string
-      setProfileImagePreview(compressedDataUrl)
-      setFormData(prev => ({ ...prev, image: compressedDataUrl }))
-
-      toast.success("Image optimized for better performance")
-    } catch (error) {
-      toast.error(error.message)
-      if (profileInputRef.current) {
-        profileInputRef.current.value = ""
-      }
-    } finally {
-      setCompressingProfile(false)
-    }
-  }
-
-  const handleCoverImageChange = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    try {
-      // Valider le fichier
-      validateImageFile(file)
-
-      setCompressingCover(true)
-      setCoverImageInfo({
-        name: file.name,
-        type: file.type,
-        originalSize: formatFileSize(file.size)
-      })
-
-      // Compresser l'image (dimensions plus grandes pour la couverture)
-      const compressedDataUrl = await compressImage(file, 1200, 800, 0.7)
-
-      // Mettre à jour l'état avec le base64 string
-      setCoverImagePreview(compressedDataUrl)
-      setFormData(prev => ({ ...prev, coverImage: compressedDataUrl }))
-
-      toast.success("Cover image optimized for better performance")
-    } catch (error) {
-      toast.error(error.message)
-      if (coverInputRef.current) {
-        coverInputRef.current.value = ""
-      }
-    } finally {
-      setCompressingCover(false)
-    }
-  }
-
-  const removeProfileImage = () => {
-    setProfileImagePreview(null)
-    setProfileImageInfo(null)
-    setFormData(prev => ({ ...prev, image: null }))
-    if (profileInputRef.current) {
-      profileInputRef.current.value = ""
-    }
-    toast.success("Profile image removed")
-  }
-
-  const removeCoverImage = () => {
-    setCoverImagePreview(null)
-    setCoverImageInfo(null)
-    setFormData(prev => ({ ...prev, coverImage: null }))
-    if (coverInputRef.current) {
-      coverInputRef.current.value = ""
-    }
-    toast.success("Cover image removed")
-  }
-
-  const triggerProfileImageUpload = () => {
-    if (profileInputRef.current) {
-      profileInputRef.current.click()
-    }
-  }
-
-  const triggerCoverImageUpload = () => {
-    if (coverInputRef.current) {
-      coverInputRef.current.click()
-    }
-  }
-
 
   const handleSubmit = (e) => {
       e.preventDefault()
@@ -241,6 +124,7 @@ const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCanc
     if (validationErrors[field]) {
       setValidationErrors((prev) => ({ ...prev, [field]: null }))
     }
+    if (typeof onFormChange === "function") onFormChange();
   }
 
   const addTag = () => {
@@ -363,219 +247,33 @@ const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCanc
     }
   }
 
-  // Dans la partie rendu, ajoutons les sections pour les images
-  const renderImageUploadSection = () => {
-    return (
-        <div className="card bg-base-100 shadow-xl border border-base-300 mb-8">
-          <div className="card-body">
-            <div className="flex items-center gap-2 mb-6">
-              <ImageIcon className="w-5 h-5 text-primary" />
-              <h3 className="card-title text-xl">Group Images</h3>
-            </div>
-
-            <div className="space-y-8">
-              {/* Cover Image Upload */}
-              <div>
-                <h4 className="font-medium mb-2">Cover Image</h4>
-                <p className="text-sm text-base-content/70 mb-4">
-                  This image will be displayed at the top of your group page
-                </p>
-
-                <input
-                    type="file"
-                    ref={coverInputRef}
-                    className="hidden"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleCoverImageChange}
-                />
-
-                {coverImagePreview ? (
-                    <div className="space-y-3">
-                      <div className="relative">
-                        <img
-                            src={coverImagePreview}
-                            alt="Cover preview"
-                            className="w-full h-48 object-cover rounded-xl shadow-md"
-                        />
-                        <div className="absolute top-2 right-2 flex gap-2">
-                          <button
-                              type="button"
-                              onClick={triggerCoverImageUpload}
-                              className="btn btn-circle btn-sm btn-primary"
-                              disabled={compressingCover}
-                          >
-                            {compressingCover ? (
-                                <span className="loading loading-spinner loading-xs"></span>
-                            ) : (
-                                <Edit3 className="w-4 h-4" />
-                            )}
-                          </button>
-                          <button
-                              type="button"
-                              onClick={removeCoverImage}
-                              className="btn btn-circle btn-sm btn-error"
-                              disabled={compressingCover}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Informations sur la compression */}
-                      {coverImageInfo && (
-                          <div className="bg-base-200 p-3 rounded-lg text-xs">
-                            <div className="flex items-center gap-2 mb-1 text-base-content/80">
-                              <Info className="w-4 h-4" />
-                              <span className="font-medium">Image details</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                              <span className="text-base-content/70">File:</span>
-                              <span className="truncate">{coverImageInfo.name}</span>
-
-                              <span className="text-base-content/70">Original:</span>
-                              <span>{coverImageInfo.originalSize}</span>
-
-                              {coverImageInfo.compressedSize && (
-                                  <>
-                                    <span className="text-base-content/70">Optimized:</span>
-                                    <span className="text-success">{coverImageInfo.compressedSize} ({coverImageInfo.compressionRatio}% smaller)</span>
-                                  </>
-                              )}
-                            </div>
-                          </div>
-                      )}
-                    </div>
-                ) : (
-                    <div
-                        onClick={triggerCoverImageUpload}
-                        className="border-2 border-dashed border-base-300 rounded-xl h-40 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
-                    >
-                      {compressingCover ? (
-                          <>
-                            <span className="loading loading-spinner loading-md text-primary mb-2"></span>
-                            <p className="text-base-content/60 font-medium">Optimizing image...</p>
-                          </>
-                      ) : (
-                          <>
-                            <UploadCloud className="w-10 h-10 text-base-content/40 mb-2" />
-                            <p className="text-base-content/60 font-medium">Click to upload cover image</p>
-                            <p className="text-xs text-base-content/40">PNG, JPG, WebP up to 5MB</p>
-                          </>
-                      )}
-                    </div>
-                )}
-              </div>
-
-              {/* Profile Image Upload */}
-              <div>
-                <h4 className="font-medium mb-2">Group Profile Picture</h4>
-                <p className="text-sm text-base-content/70 mb-4">
-                  This will be displayed as your group's avatar
-                </p>
-
-                <input
-                    type="file"
-                    ref={profileInputRef}
-                    className="hidden"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleProfileImageChange}
-                />
-
-                <div className="flex items-start gap-6">
-                  <div className="flex-shrink-0">
-                    {profileImagePreview ? (
-                        <div className="relative">
-                          <img
-                              src={profileImagePreview}
-                              alt="Profile preview"
-                              className="w-24 h-24 object-cover rounded-full shadow-md border-4 border-base-100"
-                          />
-                          <div className="absolute -top-2 -right-2 flex gap-1">
-                            <button
-                                type="button"
-                                onClick={triggerProfileImageUpload}
-                                className="btn btn-circle btn-xs btn-primary"
-                                disabled={compressingProfile}
-                            >
-                              {compressingProfile ? (
-                                  <span className="loading loading-spinner loading-xs"></span>
-                              ) : (
-                                  <Edit3 className="w-3 h-3" />
-                              )}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={removeProfileImage}
-                                className="btn btn-circle btn-xs btn-error"
-                                disabled={compressingProfile}
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          </div>
-                        </div>
-                    ) : (
-                        <div
-                            onClick={triggerProfileImageUpload}
-                            className="border-2 border-dashed border-base-300 rounded-full w-24 h-24 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
-                        >
-                          {compressingProfile ? (
-                              <span className="loading loading-spinner loading-sm text-primary"></span>
-                          ) : (
-                              <>
-                                <UploadCloud className="w-6 h-6 text-base-content/40" />
-                                <p className="text-xs text-base-content/40 mt-1">Upload</p>
-                              </>
-                          )}
-                        </div>
-                    )}
-                  </div>
-
-                  <div className="flex-1">
-                    {profileImageInfo ? (
-                        <div className="bg-base-200 p-3 rounded-lg text-xs">
-                          <div className="flex items-center gap-2 mb-1 text-base-content/80">
-                            <Info className="w-4 h-4" />
-                            <span className="font-medium">Image details</span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                            <span className="text-base-content/70">File:</span>
-                            <span className="truncate">{profileImageInfo.name}</span>
-
-                            <span className="text-base-content/70">Original:</span>
-                            <span>{profileImageInfo.originalSize}</span>
-
-                            {profileImageInfo.compressedSize && (
-                                <>
-                                  <span className="text-base-content/70">Optimized:</span>
-                                  <span className="text-success">{profileImageInfo.compressedSize} ({profileImageInfo.compressionRatio}% smaller)</span>
-                                </>
-                            )}
-                          </div>
-                        </div>
-                    ) : (
-                        <>
-                          <p className="text-sm text-base-content/70">
-                            Upload a square image for best results. This will be displayed in group listings and messages.
-                          </p>
-                          <p className="text-xs text-base-content/50 mt-1">
-                            Recommended: 400x400 pixels, up to 5MB
-                          </p>
-                        </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-    )
-  }
-
-
   // For update mode, show all steps in one view
   if (mode === "update") {
     return (
         <div className="space-y-8">
+          {/* Images Upload Section */}
+                    <ImageUploadField
+                      label="Cover Image"
+                      description="This image will be displayed at the top of your group page"
+                      value={formData.coverImage}
+                      onChange={(img) => handleInputChange("coverImage", img)}
+                      recommended="1200x800px, PNG/JPG/WebP, up to 5MB"
+                      width={1200}
+                      height={800}
+                      quality={0.7}
+                    />
+
+                    <ImageUploadField
+                      label="Group Profile Picture"
+                      description="This will be displayed as your group's avatar"
+                      value={formData.image}
+                      onChange={(img) => handleInputChange("image", img)}
+                      recommended="400x400px, PNG/JPG/WebP, up to 5MB"
+                      width={400}
+                      height={400}
+                      quality={0.8}
+                      rounded
+                    />
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
@@ -1233,7 +931,28 @@ const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCanc
                       </div>
                     </div>
                     {/* Images Upload Section */}
-                    {renderImageUploadSection()}
+                    <ImageUploadField
+                      label="Cover Image"
+                      description="This image will be displayed at the top of your group page"
+                      value={formData.coverImage}
+                      onChange={(img) => handleInputChange("coverImage", img)}
+                      recommended="1200x800px, PNG/JPG/WebP, up to 5MB"
+                      width={1200}
+                      height={800}
+                      quality={0.7}
+                    />
+
+                    <ImageUploadField
+                      label="Group Profile Picture"
+                      description="This will be displayed as your group's avatar"
+                      value={formData.image}
+                      onChange={(img) => handleInputChange("image", img)}
+                      recommended="400x400px, PNG/JPG/WebP, up to 5MB"
+                      width={400}
+                      height={400}
+                      quality={0.8}
+                      rounded
+                    />
                   </>
 
 
@@ -1271,11 +990,6 @@ const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCanc
                                   </option>
                               ))}
                             </select>
-                            {validationErrors.nativeLanguage && (
-                                <label className="label">
-                                  <span className="label-text-alt text-error">{validationErrors.nativeLanguage}</span>
-                                </label>
-                            )}
                           </div>
 
                           <div>
@@ -1299,11 +1013,6 @@ const GroupForm = ({ mode, initialData = {}, onSubmit, isLoading = false, onCanc
                                   </option>
                               ))}
                             </select>
-                            {validationErrors.learningLanguage && (
-                                <label className="label">
-                                  <span className="label-text-alt text-error">{validationErrors.learningLanguage}</span>
-                                </label>
-                            )}
                           </div>
 
                           <div>

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { User, MapPin, Globe, MessageSquare, Plus, X, Save } from "lucide-react"
 import { LANGUAGES } from "../../constants"
 
-const ProfileInfo = ({ profile, onUpdate, isOwnProfile = false }) => {
+const ProfileInfo = ({ profile, onUpdate, isOwnProfile = false, onChange }) => {
     const [formData, setFormData] = useState({
         fullName: profile.fullName || "",
         bio: profile.bio || "",
@@ -25,6 +25,9 @@ const ProfileInfo = ({ profile, onUpdate, isOwnProfile = false }) => {
             ...prev,
             [name]: value,
         }))
+        if (typeof onChange === "function") {
+            onChange()
+        }
     }
 
     const handleSubmit = async (e) => {
@@ -44,6 +47,9 @@ const ProfileInfo = ({ profile, onUpdate, isOwnProfile = false }) => {
                 interests: [...prev.interests, newInterest.trim()],
             }))
             setNewInterest("")
+            if (typeof onChange === "function") {
+                onChange()
+            }
         }
     }
 
@@ -52,6 +58,9 @@ const ProfileInfo = ({ profile, onUpdate, isOwnProfile = false }) => {
             ...prev,
             interests: prev.interests.filter((i) => i !== interest),
         }))
+        if (typeof onChange === "function") {
+            onChange()
+        }
     }
 
     const handleKeyPress = (e) => {
@@ -314,7 +323,10 @@ const ProfileInfo = ({ profile, onUpdate, isOwnProfile = false }) => {
                         <input
                             type="text"
                             value={newInterest}
-                            onChange={(e) => setNewInterest(e.target.value)}
+                            onChange={(e) => {
+                                setNewInterest(e.target.value)
+                                handleChange(e)
+                            }}
                             onKeyPress={handleKeyPress}
                             className="input input-bordered input-lg flex-1 focus:input-primary"
                             placeholder="e.g., Music, Sports, Cooking..."
@@ -342,7 +354,10 @@ const ProfileInfo = ({ profile, onUpdate, isOwnProfile = false }) => {
                                     <span>{interest}</span>
                                     <button
                                         type="button"
-                                        onClick={() => handleRemoveInterest(interest)}
+                                        onClick={() => {
+                                            handleRemoveInterest(interest)
+                                            handleChange(e)
+                                        }}
                                         className="btn btn-ghost btn-xs text-primary-content hover:bg-primary-content/20"
                                     >
                                         <X className="w-3 h-3" />

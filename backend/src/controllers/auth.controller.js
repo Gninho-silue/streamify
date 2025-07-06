@@ -1,8 +1,6 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import { upsertStreamUser, generateStreamToken } from "../lib/stream.js";
-import e from "express";
-
 
 export async function signup(req, res) {
    const { email, password, fullName } = req.body;
@@ -52,15 +50,16 @@ export async function signup(req, res) {
         const token = jwt.sign(
             { userId: newUser._id },
             process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "2d" }
         )
 
         res.cookie("token", token, {
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
             httpOnly: true,
             sameSite: "strict", // Helps prevent CSRF attacks
             secure: process.env.NODE_ENV === "production", // Use secure cookies in production
         });
+        
 
         res.status(201).json({success: true, user: newUser });
 
@@ -141,7 +140,7 @@ export async function onboard(req, res) {
             name: updatedUser.fullName,
             image: updatedUser.profilePicture || ""
          });
-         console.log(`Stream user updated after onboarding for ${updatedUser.fullName}`)
+         
         
        } catch (streamError) {
         console.error("Error updating Stream user during onboarding:", streamError.message)

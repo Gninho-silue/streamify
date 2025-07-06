@@ -1,6 +1,5 @@
 import User from "../models/User.js";
 import FriendRequest from "../models/FriendRequest.js";
-import Notification from "../models/notification.model.js";
 import { upsertStreamUser } from "../lib/stream.js";
 import { sendFriendRequestNotification, sendFriendRequestAcceptedNotification } from '../utils/notificationUtils.js';
 
@@ -9,8 +8,6 @@ export async function getRecommendedUsers(req, res) {
     const currentUserId = req.user.id;
     const currentUser = req.user;
 
-    console.log("Current user:", currentUser);
-    console.log("Current user ID:", currentUserId);
 
     const recommendedUsers = await User.find({
       $and: [
@@ -21,9 +18,6 @@ export async function getRecommendedUsers(req, res) {
         { isOnBoarded: true },
       ],
     }).select('fullName profilePicture bio nativeLanguage learningLanguage location interests status availability');
-
-    console.log("Recommended users found:", recommendedUsers.length);
-    console.log("Recommended users:", recommendedUsers);
 
     res.status(200).json(recommendedUsers);
   } catch (error) {
@@ -389,7 +383,7 @@ export async function getBlockedUsers(req, res) {
     try {
         const user = await User.findById(req.user.id)
             .select('blockedUsers')
-            .populate('blockedUsers', 'fullName profilePicture');
+            .populate('blockedUsers', 'fullName profilePicture nativeLanguage learningLanguage');
         
         if (!user) {
             return res.status(404).json({ message: "User not found" });

@@ -57,8 +57,6 @@ export const addMembersToChannel = async (channelId, memberIds) => {
     }
 }
 
-// À ajouter dans lib/stream.js
-
 export async function removeMemberFromChannel(channelId, userId) {
     try {
         // Récupérer le canal

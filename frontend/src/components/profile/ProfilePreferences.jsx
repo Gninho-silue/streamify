@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Palette, Bell, Shield, Save, Moon, Sun, Monitor } from "lucide-react"
 
-const ProfilePreferences = ({ preferences, onUpdate }) => {
+const ProfilePreferences = ({ preferences, onUpdate, onChange }) => {
     const [formData, setFormData] = useState({
         theme: preferences?.theme || "system",
         notifications: {
@@ -26,6 +26,9 @@ const ProfilePreferences = ({ preferences, onUpdate }) => {
             ...prev,
             theme: value,
         }))
+        if (typeof onChange === "function") {
+            onChange()
+        }
     }
 
     const handleNotificationChange = (e) => {
@@ -37,6 +40,9 @@ const ProfilePreferences = ({ preferences, onUpdate }) => {
                 [name]: checked,
             },
         }))
+        if (typeof onChange === "function") {
+            onChange()
+        }
     }
 
     const handlePrivacyChange = (e) => {
@@ -48,6 +54,9 @@ const ProfilePreferences = ({ preferences, onUpdate }) => {
                 [name]: checked,
             },
         }))
+        if (typeof onChange === "function") {
+            onChange()
+        }
     }
 
     const handleSubmit = async (e) => {
@@ -57,6 +66,9 @@ const ProfilePreferences = ({ preferences, onUpdate }) => {
             await onUpdate(formData)
         } finally {
             setIsSubmitting(false)
+        }
+        if (typeof onChange === "function") {
+            onChange()
         }
     }
 

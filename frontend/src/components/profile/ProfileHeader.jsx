@@ -6,7 +6,7 @@ import { compressImage, validateImageFile } from "../../utils/imageUtils"
 import toast from "react-hot-toast"
 import {formatDate} from "../../lib/utils.js";
 
-const ProfileHeader = ({ profile, onUpdate, isOwnProfile = false }) => {
+const ProfileHeader = ({ profile, onUpdate, isOwnProfile = false, onChange }) => {
     const [isEditing, setIsEditing] = useState(false)
     const [coverImage, setCoverImage] = useState(profile.coverPicture)
     const [profileImage, setProfileImage] = useState(profile.profilePicture)
@@ -64,12 +64,18 @@ const ProfileHeader = ({ profile, onUpdate, isOwnProfile = false }) => {
         if (file) {
             handleImageUpload(file, "cover")
         }
+        if (typeof onChange === "function") {
+            onChange()
+        }
     }
 
     const handleProfileImageChange = (e) => {
         const file = e.target.files[0]
         if (file) {
             handleImageUpload(file, "profile")
+        }
+        if (typeof onChange === "function") {
+            onChange()
         }
     }
 

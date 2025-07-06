@@ -26,16 +26,16 @@ router.post("/friend-request/:requestId/accept", protectedRoute, acceptFriendReq
 router.get("/friend-requests", protectedRoute, getFriendRequests);
 router.get("/outgoing-friend-requests", protectedRoute, getOutgoingFriendRequests);
 
-// Nouvelles routes pour le profil
-router.get("/profile", protectedRoute, getProfile);
-router.put("/profile", protectedRoute, updateProfile);
-router.put("/preferences", protectedRoute, updatePreferences);
-
 // Routes pour la gestion des utilisateurs bloqués
 router.post("/block/:userId", protectedRoute, blockUser);
 router.delete("/block/:userId", protectedRoute, unblockUser);
 router.get("/blocked", protectedRoute, getBlockedUsers);
 
+// Nouvelles routes pour le profil
+router.get("/profile", protectedRoute, getProfile);
+router.put("/profile", protectedRoute, updateProfile);
+router.put("/preferences", protectedRoute, updatePreferences);
 router.get("/:id", protectedRoute, getUserPublicProfile);
+
 
 export default router;

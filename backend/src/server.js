@@ -15,7 +15,7 @@ import path from 'path';
 const app = express();
 const PORT = process.env.PORT;
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.urlencoded({ limit: '10mb', extended: true })); 
 
 const __dirname = path.resolve();
 
