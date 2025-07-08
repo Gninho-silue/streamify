@@ -100,6 +100,7 @@ const GroupCall = ({ group, callType = 'video', onEndCall }) => {
       onEndCall();
     }
     toast.success('Call ended');
+    navigate(`/groups/${group._id}`);
   };
 
   if (authLoading) {
