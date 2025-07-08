@@ -20,7 +20,9 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 const __dirname = path.resolve();
 
 app.use(cors({
-    origin: process.env.CLIENT_URL, // Replace with your frontend URL
+    origin: [process.env.CLIENT_URL, // Replace with your frontend URL
+        "https://streamify-production-b0f0.up.railway.app"
+     ],
     credentials: true, // Allow cookies to be sent with requests
 }));
 app.use(express.json());
